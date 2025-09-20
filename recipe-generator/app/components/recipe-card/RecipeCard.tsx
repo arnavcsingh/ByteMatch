@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Clock, Users, ChefHat, Heart, Bookmark, ExternalLink } from "lucide-react";
+import { Clock, Users, ChefHat, Heart, ExternalLink } from "lucide-react";
 import { Recipe } from "@/types";
 
 interface RecipeCardProps {
@@ -154,20 +154,10 @@ export default function RecipeCard({
         <div className="flex space-x-3">
           <button
             onClick={() => onViewDetails?.(recipe)}
-            className="flex-1 bg-gradient-to-r from-orange-500 to-red-500 text-white px-6 py-3 rounded-xl text-sm font-semibold hover:from-orange-600 hover:to-red-600 transition-all duration-200 flex items-center justify-center shadow-lg hover:shadow-xl transform hover:scale-105"
+            className="w-full bg-gradient-to-r from-orange-500 to-red-500 text-white px-6 py-3 rounded-xl text-sm font-semibold hover:from-orange-600 hover:to-red-600 transition-all duration-200 flex items-center justify-center shadow-lg hover:shadow-xl transform hover:scale-105"
           >
             <ExternalLink className="w-4 h-4 mr-2" />
             View Recipe
-          </button>
-          <button
-            onClick={() => onToggleFavorite?.(recipe.id)}
-            className={`px-4 py-3 rounded-xl text-sm font-semibold transition-all duration-200 flex items-center justify-center shadow-lg hover:shadow-xl transform hover:scale-105 ${
-              isFavorite
-                ? "bg-gradient-to-r from-red-500 to-pink-500 text-white hover:from-red-600 hover:to-pink-600"
-                : "bg-white border-2 border-orange-200 text-orange-600 hover:bg-orange-50"
-            }`}
-          >
-            <Bookmark className="w-4 h-4" />
           </button>
         </div>
 

@@ -277,8 +277,14 @@ export async function POST(request: NextRequest) {
 
               // Use a more diverse and realistic set of popular dishes
               const mockClassifications = [
-                { dish: "Pizza", confidence: 0.95, cuisine: "Italian", tags: ["cheese", "tomato", "dough", "baked"] },
-                { dish: "Burger", confidence: 0.92, cuisine: "American", tags: ["beef", "bun", "lettuce", "tomato", "cheese"] },
+                { dish: "Cheeseburger", confidence: 0.95, cuisine: "American", tags: ["beef", "cheese", "bun", "lettuce", "tomato"] },
+                { dish: "Pizza", confidence: 0.92, cuisine: "Italian", tags: ["cheese", "tomato", "dough", "baked"] },
+                { dish: "Smash Burger", confidence: 0.93, cuisine: "American", tags: ["beef", "cheese", "bun", "onions", "pickles"] },
+                { dish: "Bacon Cheeseburger", confidence: 0.90, cuisine: "American", tags: ["beef", "bacon", "cheese", "bun", "lettuce"] },
+                { dish: "Mushroom Swiss Burger", confidence: 0.88, cuisine: "American", tags: ["beef", "mushrooms", "swiss cheese", "bun"] },
+                { dish: "Veggie Burger", confidence: 0.87, cuisine: "American", tags: ["vegetarian", "bun", "lettuce", "tomato", "onion"] },
+                { dish: "Gourmet Burger", confidence: 0.91, cuisine: "American", tags: ["beef", "gourmet", "bun", "premium", "toppings"] },
+                { dish: "Deluxe Burger", confidence: 0.89, cuisine: "American", tags: ["beef", "deluxe", "bun", "multiple toppings"] },
                 { dish: "Sushi", confidence: 0.93, cuisine: "Japanese", tags: ["rice", "fish", "seaweed", "wasabi"] },
                 { dish: "Pasta", confidence: 0.88, cuisine: "Italian", tags: ["noodles", "sauce", "cheese", "herbs"] },
                 { dish: "Tacos", confidence: 0.87, cuisine: "Mexican", tags: ["tortilla", "meat", "vegetables", "salsa"] },
@@ -290,18 +296,12 @@ export async function POST(request: NextRequest) {
                 { dish: "Steak", confidence: 0.91, cuisine: "American", tags: ["beef", "grilled", "protein", "meat"] },
                 { dish: "Ramen", confidence: 0.89, cuisine: "Japanese", tags: ["noodles", "broth", "pork", "egg"] },
                 { dish: "Curry", confidence: 0.87, cuisine: "Indian", tags: ["spices", "rice", "vegetables", "sauce"] },
-                { dish: "Fish", confidence: 0.86, cuisine: "Various", tags: ["seafood", "protein", "grilled", "healthy"] },
-                { dish: "Rice Bowl", confidence: 0.84, cuisine: "Asian", tags: ["rice", "vegetables", "protein", "sauce"] },
-                { dish: "Pancakes", confidence: 0.93, cuisine: "American", tags: ["breakfast", "sweet", "flour", "syrup"] },
-                { dish: "Waffles", confidence: 0.91, cuisine: "American", tags: ["breakfast", "sweet", "flour", "syrup"] },
-                { dish: "Omelette", confidence: 0.88, cuisine: "French", tags: ["eggs", "cheese", "vegetables", "breakfast"] },
-                { dish: "Lasagna", confidence: 0.90, cuisine: "Italian", tags: ["pasta", "cheese", "meat", "baked"] },
-                { dish: "Stir Fry", confidence: 0.85, cuisine: "Asian", tags: ["vegetables", "meat", "rice", "sauce"] }
+                { dish: "Fish", confidence: 0.86, cuisine: "Various", tags: ["seafood", "protein", "grilled", "healthy"] }
               ];
 
               // Use a weighted random selection - more popular dishes appear more often
               const weightedSelection = () => {
-                const weights = [15, 12, 10, 8, 7, 6, 5, 4, 3, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2]; // Pizza and Burger get higher weights
+                const weights = [15, 12, 10, 8, 7, 6, 5, 4, 3, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2]; // Burgers get higher weights
                 const totalWeight = weights.reduce((sum, weight) => sum + weight, 0);
                 let random = Math.random() * totalWeight;
                 

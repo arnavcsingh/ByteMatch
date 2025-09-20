@@ -1,10 +1,12 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Upload, Search, Filter, Heart, History, ChefHat, Loader2 } from "lucide-react";
+import { Upload, Search, Filter, Heart, History, ChefHat, Loader2, User } from "lucide-react";
 import ImageUpload from "./components/image-upload/ImageUpload";
 import RecipeCard from "./components/recipe-card/RecipeCard";
 import RecipeModal from "./components/recipe-modal/RecipeModal";
+import AuthModal from "./components/auth/AuthModal";
+import UserProfile from "./components/auth/UserProfile";
 import IngredientFilter from "./components/ingredient-filter/IngredientFilter";
 import { UploadedImage, ClassificationResult, Recipe, FilterOptions } from "@/types";
 import { StorageManager } from "@/helpers/storage";
@@ -23,18 +25,86 @@ export default function HomePage() {
   const [showFilters, setShowFilters] = useState(false);
   const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const [user, setUser] = useState<any>(null);
+  const [isLoadingUser, setIsLoadingUser] = useState(true);
 
-  // Load data from localStorage on mount
+  // Load user data and authentication on mount
   useEffect(() => {
-    setFavorites(StorageManager.getFavorites());
-    setHistory(StorageManager.getHistory());
+    checkAuth();
   }, []);
+
+  // Load localStorage data for non-authenticated users
+  useEffect(() => {
+    if (!user && !isLoadingUser) {
+      setFavorites(StorageManager.getFavorites());
+      setHistory(StorageManager.getHistory());
+    }
+  }, [user, isLoadingUser]);
+
+  // Check authentication status
+  const checkAuth = async () => {
+    try {
+      const response = await fetch('/api/auth/me');
+      if (response.ok) {
+        const data = await response.json();
+        setUser(data.user);
+        await loadUserData(data.user.id);
+      }
+    } catch (error) {
+      console.error('Auth check failed:', error);
+    } finally {
+      setIsLoadingUser(false);
+    }
+  };
+
+  // Load user's favorites and history from database
+  const loadUserData = async (userId: string) => {
+    try {
+      // Load favorites
+      const favoritesResponse = await fetch('/api/user/favorites');
+      if (favoritesResponse.ok) {
+        const favoritesData = await favoritesResponse.json();
+        const favoriteIds = favoritesData.recipes.map((r: Recipe) => r.id);
+        setFavorites(favoriteIds);
+        
+        // Also load the actual recipe data for display
+        if (favoritesData.recipes.length > 0) {
+          setRecipes(prev => {
+            const existingIds = prev.map(r => r.id);
+            const newRecipes = favoritesData.recipes.filter((r: Recipe) => !existingIds.includes(r.id));
+            return [...prev, ...newRecipes];
+          });
+        }
+      }
+
+      // Load history
+      const historyResponse = await fetch('/api/user/history');
+      if (historyResponse.ok) {
+        const historyData = await historyResponse.json();
+        const historyIds = historyData.recipes.map((r: Recipe) => r.id);
+        setHistory(historyIds);
+        
+        // Also load the actual recipe data for display
+        if (historyData.recipes.length > 0) {
+          setRecipes(prev => {
+            const existingIds = prev.map(r => r.id);
+            const newRecipes = historyData.recipes.filter((r: Recipe) => !existingIds.includes(r.id));
+            return [...prev, ...newRecipes];
+          });
+        }
+      }
+    } catch (error) {
+      console.error('Failed to load user data:', error);
+    }
+  };
 
   // Handle image upload
   const handleImageUpload = (image: UploadedImage) => {
     setUploadedImage(image);
     setClassification(null);
-    setRecipes([]);
+    // Don't clear recipes - keep favorites and history visible
+    // setRecipes([]);
   };
 
   // Handle image removal
@@ -44,7 +114,8 @@ export default function HomePage() {
     }
     setUploadedImage(null);
     setClassification(null);
-    setRecipes([]);
+    // Don't clear recipes - keep favorites and history visible
+    // setRecipes([]);
   };
 
   // Classify uploaded image
@@ -106,7 +177,12 @@ export default function HomePage() {
       
       if (response.ok) {
         const data = await response.json();
-        setRecipes(data.recipes);
+        // Merge new recipes with existing ones, avoiding duplicates
+        setRecipes(prev => {
+          const existingIds = prev.map(r => r.id);
+          const newRecipes = data.recipes.filter((r: Recipe) => !existingIds.includes(r.id));
+          return [...prev, ...newRecipes];
+        });
       } else {
         console.error("Failed to fetch recipes");
       }
@@ -126,21 +202,72 @@ export default function HomePage() {
   };
 
   // Handle favorite toggle
-  const handleToggleFavorite = (recipeId: string) => {
-    const isNowFavorite = StorageManager.toggleFavorite(recipeId);
-    setFavorites(StorageManager.getFavorites());
-    
-    // Add to history when favorited
-    if (isNowFavorite) {
-      StorageManager.addToHistory(recipeId);
-      setHistory(StorageManager.getHistory());
+  const handleToggleFavorite = async (recipeId: string) => {
+    if (user) {
+      // Use database for authenticated users
+      try {
+        const response = await fetch('/api/user/favorites', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ recipeId }),
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          const isNowFavorite = data.isFavorite;
+          
+          // Update local state
+          if (isNowFavorite) {
+            setFavorites(prev => [...prev, recipeId]);
+          } else {
+            setFavorites(prev => prev.filter(id => id !== recipeId));
+          }
+        }
+      } catch (error) {
+        console.error('Failed to toggle favorite:', error);
+      }
+    } else {
+      // Use localStorage for non-authenticated users
+      const isNowFavorite = StorageManager.toggleFavorite(recipeId);
+      setFavorites(StorageManager.getFavorites());
+      
+      // Add to history when favorited
+      if (isNowFavorite) {
+        StorageManager.addToHistory(recipeId);
+        setHistory(StorageManager.getHistory());
+      }
     }
   };
 
   // Handle recipe view
-  const handleViewRecipe = (recipe: Recipe) => {
-    StorageManager.addToHistory(recipe.id);
-    setHistory(StorageManager.getHistory());
+  const handleViewRecipe = async (recipe: Recipe) => {
+    if (user) {
+      // Use database for authenticated users
+      try {
+        await fetch('/api/user/history', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ recipeId: recipe.id }),
+        });
+        
+        // Update local state
+        setHistory(prev => {
+          const filtered = prev.filter(id => id !== recipe.id);
+          return [recipe.id, ...filtered].slice(0, 50);
+        });
+      } catch (error) {
+        console.error('Failed to add to history:', error);
+      }
+    } else {
+      // Use localStorage for non-authenticated users
+      StorageManager.addToHistory(recipe.id);
+      setHistory(StorageManager.getHistory());
+    }
+    
     setSelectedRecipe(recipe);
     setIsModalOpen(true);
   };
@@ -149,6 +276,27 @@ export default function HomePage() {
   const handleCloseModal = () => {
     setIsModalOpen(false);
     setSelectedRecipe(null);
+  };
+
+  // Handle authentication success
+  const handleAuthSuccess = async (userData: any) => {
+    setUser(userData);
+    // Clear current data and load fresh from database
+    setFavorites([]);
+    setHistory([]);
+    setRecipes([]);
+    await loadUserData(userData.id);
+  };
+
+  // Handle logout
+  const handleLogout = () => {
+    setUser(null);
+    setFavorites([]);
+    setHistory([]);
+    setRecipes([]);
+    // Fallback to localStorage for non-authenticated users
+    setFavorites(StorageManager.getFavorites());
+    setHistory(StorageManager.getHistory());
   };
 
   // Get favorite recipes (mock data for demo)
@@ -161,6 +309,74 @@ export default function HomePage() {
   const getHistoryRecipes = (): Recipe[] => {
     // In a real app, you'd fetch these from your API
     return recipes.filter(recipe => history.includes(recipe.id));
+  };
+
+  // Get recipes to display in upload tab
+  const getUploadTabRecipes = (): Recipe[] => {
+    // If no image uploaded, show favorites by default
+    if (!uploadedImage && !classification) {
+      const favoriteRecipes = getFavoriteRecipes();
+      // If no favorites, show history instead
+      if (favoriteRecipes.length === 0) {
+        return getHistoryRecipes();
+      }
+      return favoriteRecipes;
+    }
+    
+    // If image uploaded and classified, show all recipes with correlated ones first
+    if (classification) {
+      return recipes.sort((a, b) => {
+        // Calculate correlation score for each recipe
+        const scoreA = calculateCorrelationScore(a, classification);
+        const scoreB = calculateCorrelationScore(b, classification);
+        return scoreB - scoreA; // Sort descending (highest correlation first)
+      });
+    }
+    
+    // Default: show all recipes
+    return recipes;
+  };
+
+  // Calculate correlation score between recipe and classification
+  const calculateCorrelationScore = (recipe: Recipe, classification: ClassificationResult): number => {
+    let score = 0;
+    
+    // Check title correlation
+    const titleLower = recipe.title.toLowerCase();
+    const dishLower = classification.dish.toLowerCase();
+    
+    if (titleLower.includes(dishLower)) {
+      score += 10; // High score for direct title match
+    }
+    
+    // Check cuisine correlation
+    if (recipe.cuisine.toLowerCase() === classification.cuisine.toLowerCase()) {
+      score += 5; // Medium score for cuisine match
+    }
+    
+    // Check ingredient correlation
+    const classificationTags = classification.tags.map(tag => tag.toLowerCase());
+    const recipeIngredients = recipe.ingredients.map(ing => ing.toLowerCase());
+    
+    classificationTags.forEach(tag => {
+      recipeIngredients.forEach(ingredient => {
+        if (ingredient.includes(tag) || tag.includes(ingredient)) {
+          score += 2; // Small score for ingredient matches
+        }
+      });
+    });
+    
+    // Check tag correlation
+    const recipeTags = recipe.tags.map(tag => tag.toLowerCase());
+    classificationTags.forEach(tag => {
+      recipeTags.forEach(recipeTag => {
+        if (recipeTag.includes(tag) || tag.includes(recipeTag)) {
+          score += 3; // Medium score for tag matches
+        }
+      });
+    });
+    
+    return score;
   };
 
   return (
@@ -177,6 +393,23 @@ export default function HomePage() {
               <h1 className="text-xl font-bold bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text text-transparent">
                 Recipe Generator
               </h1>
+            </div>
+
+            {/* Authentication */}
+            <div className="flex items-center space-x-4">
+              {isLoadingUser ? (
+                <div className="w-8 h-8 border-2 border-orange-500 border-t-transparent rounded-full animate-spin" />
+              ) : user ? (
+                <UserProfile user={user} onLogout={handleLogout} />
+              ) : (
+                <button
+                  onClick={() => setIsAuthModalOpen(true)}
+                  className="flex items-center space-x-2 bg-gradient-to-r from-orange-500 to-red-500 text-white px-4 py-2 rounded-xl font-semibold hover:from-orange-600 hover:to-red-600 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105"
+                >
+                  <User className="w-4 h-4" />
+                  <span>Sign In</span>
+                </button>
+              )}
             </div>
             
             {/* Navigation Tabs */}
@@ -337,10 +570,13 @@ export default function HomePage() {
             )}
 
             {/* Recipes Grid */}
-            {recipes.length > 0 && (
+            {getUploadTabRecipes().length > 0 && (
               <div>
                 <h3 className="text-3xl font-bold bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text text-transparent mb-8 text-center">
-                  🍳 Recommended Recipes
+                  {!uploadedImage && !classification 
+                    ? (getFavoriteRecipes().length > 0 ? "❤️ Your Favorite Recipes" : "📚 Your Recent Recipes")
+                    : "🍳 Recommended Recipes"
+                  }
                 </h3>
                 {isLoadingRecipes ? (
                   <div className="flex justify-center items-center py-16">
@@ -351,7 +587,7 @@ export default function HomePage() {
                   </div>
                 ) : (
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    {recipes.map((recipe) => (
+                    {getUploadTabRecipes().map((recipe) => (
                       <RecipeCard
                         key={recipe.id}
                         recipe={recipe}
@@ -437,6 +673,13 @@ export default function HomePage() {
         onClose={handleCloseModal}
         onToggleFavorite={handleToggleFavorite}
         isFavorite={selectedRecipe ? favorites.includes(selectedRecipe.id) : false}
+      />
+
+      {/* Authentication Modal */}
+      <AuthModal
+        isOpen={isAuthModalOpen}
+        onClose={() => setIsAuthModalOpen(false)}
+        onAuthSuccess={handleAuthSuccess}
       />
     </div>
   );
