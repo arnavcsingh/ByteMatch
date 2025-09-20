@@ -65,13 +65,13 @@ export default function ImageUpload({
   };
 
   return (
-    <div className="w-full max-w-md mx-auto">
+    <div className="w-full max-w-lg mx-auto">
       {!uploadedImage ? (
         <div
-          className={`relative border-2 border-dashed rounded-lg p-8 text-center transition-colors ${
+          className={`relative border-2 border-dashed rounded-2xl p-12 text-center transition-all duration-300 ${
             dragActive
-              ? "border-primary bg-primary/5"
-              : "border-gray-300 hover:border-gray-400"
+              ? "border-orange-400 bg-gradient-to-br from-orange-50 to-red-50 shadow-xl scale-105"
+              : "border-orange-200 hover:border-orange-300 bg-white/80 backdrop-blur-sm hover:shadow-lg"
           } ${isProcessing ? "opacity-50 pointer-events-none" : ""}`}
           onDragEnter={handleDrag}
           onDragLeave={handleDrag}
@@ -87,16 +87,21 @@ export default function ImageUpload({
             disabled={isProcessing}
           />
           
-          <div className="flex flex-col items-center space-y-4">
-            <div className="p-4 bg-gray-100 rounded-full">
-              <Camera className="w-8 h-8 text-gray-600" />
+          <div className="flex flex-col items-center space-y-6">
+            <div className="relative">
+              <div className="p-6 bg-gradient-to-br from-orange-100 to-red-100 rounded-full shadow-lg">
+                <Camera className="w-12 h-12 text-orange-600" />
+              </div>
+              <div className="absolute -top-2 -right-2 w-6 h-6 bg-gradient-to-r from-orange-400 to-red-400 rounded-full flex items-center justify-center">
+                <span className="text-white text-xs font-bold">📸</span>
+              </div>
             </div>
             
             <div>
-              <p className="text-lg font-medium text-gray-900">
+              <p className="text-2xl font-bold text-gray-900 mb-2">
                 Upload a food image
               </p>
-              <p className="text-sm text-gray-500 mt-1">
+              <p className="text-gray-600">
                 Drag and drop or click to browse
               </p>
             </div>
@@ -104,37 +109,36 @@ export default function ImageUpload({
             <button
               onClick={handleClick}
               disabled={isProcessing}
-              className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-primary hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary disabled:opacity-50"
+              className="inline-flex items-center px-8 py-4 bg-gradient-to-r from-orange-500 to-red-500 text-white font-semibold rounded-xl hover:from-orange-600 hover:to-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 disabled:opacity-50 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
             >
-              <Upload className="w-4 h-4 mr-2" />
+              <Upload className="w-5 h-5 mr-2" />
               Choose File
             </button>
           </div>
         </div>
       ) : (
         <div className="relative">
-          <div className="relative rounded-lg overflow-hidden bg-gray-100">
+          <div className="relative rounded-2xl overflow-hidden bg-gradient-to-br from-orange-50 to-red-50 shadow-xl border border-orange-100">
             <img
               src={uploadedImage.preview}
               alt="Uploaded food"
-              className="w-full h-64 object-cover"
+              className="w-full h-80 object-cover"
             />
             <button
               onClick={handleRemove}
               disabled={isProcessing}
-              className="absolute top-2 right-2 p-2 bg-white/80 hover:bg-white rounded-full shadow-md transition-colors disabled:opacity-50"
+              className="absolute top-4 right-4 p-3 bg-white/90 hover:bg-white rounded-full shadow-lg transition-all duration-200 disabled:opacity-50 hover:scale-110"
             >
-              <X className="w-4 h-4 text-gray-600" />
+              <X className="w-5 h-5 text-gray-600" />
             </button>
-          </div>
-          
-          <div className="mt-2 text-center">
-            <p className="text-sm text-gray-600">
-              {uploadedImage.file.name}
-            </p>
-            <p className="text-xs text-gray-500">
-              {(uploadedImage.file.size / 1024 / 1024).toFixed(2)} MB
-            </p>
+            <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/50 to-transparent p-4">
+              <p className="text-white font-semibold text-lg">
+                {uploadedImage.file.name}
+              </p>
+              <p className="text-white/80 text-sm">
+                {(uploadedImage.file.size / 1024 / 1024).toFixed(2)} MB
+              </p>
+            </div>
           </div>
         </div>
       )}

@@ -10,6 +10,7 @@ export interface Recipe {
   difficulty: "easy" | "medium" | "hard";
   cuisine: string;
   tags: string[];
+  sourceUrl?: string;
 }
 
 export interface ClassificationResult {
