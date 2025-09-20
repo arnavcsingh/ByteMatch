@@ -33,6 +33,10 @@ const foodClassMapping: Record<string, { dish: string; cuisine: string; tags: st
   "creme_brulee": { dish: "Crème Brûlée", cuisine: "French", tags: ["custard", "dessert", "french", "caramel"] },
   "croque_madame": { dish: "Croque Madame", cuisine: "French", tags: ["sandwich", "ham", "cheese", "egg"] },
   "cup_cakes": { dish: "Cupcakes", cuisine: "American", tags: ["cake", "dessert", "frosting", "sweet"] },
+  "cucumber": { dish: "Cucumber", cuisine: "Various", tags: ["vegetable", "fresh", "green", "salad"] },
+  "bell pepper": { dish: "Bell Pepper", cuisine: "Various", tags: ["vegetable", "fresh", "colorful", "salad"] },
+  "bagel": { dish: "Bagel", cuisine: "American", tags: ["bread", "breakfast", "dough", "toasted"] },
+  "wok": { dish: "Stir Fry", cuisine: "Asian", tags: ["vegetables", "meat", "rice", "sauce"] },
   "deviled_eggs": { dish: "Deviled Eggs", cuisine: "American", tags: ["eggs", "appetizer", "mayonnaise", "spicy"] },
   "donuts": { dish: "Donuts", cuisine: "American", tags: ["pastry", "fried", "dessert", "sweet"] },
   "dumplings": { dish: "Dumplings", cuisine: "Chinese", tags: ["dough", "filling", "steamed", "chinese"] },
@@ -199,6 +203,7 @@ export async function POST(request: NextRequest) {
     }
 
     const hfResult = await response.json();
+    console.log("Hugging Face API response:", JSON.stringify(hfResult, null, 2));
 
     // Handle the response format from Hugging Face
     if (!Array.isArray(hfResult) || hfResult.length === 0) {
@@ -209,20 +214,26 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Get the top prediction
+    // Get the top prediction only
     const topPrediction = hfResult[0];
     const foodClass = topPrediction.label;
     const confidence = topPrediction.score;
+    
+    console.log("Selected top prediction:", { foodClass, confidence });
 
+    // Clean up the food class name (remove commas, underscores, etc.)
+    const cleanFoodClass = foodClass.split(',')[0].trim().replace(/_/g, " ");
+    console.log("Cleaned food class:", cleanFoodClass);
+    
     // Map the Food-101 class to our format
-    const mapping = foodClassMapping[foodClass];
+    const mapping = foodClassMapping[cleanFoodClass];
     if (!mapping) {
       // Fallback for unknown classes
       const result: ClassificationResult = {
-        dish: foodClass.replace(/_/g, " ").replace(/\b\w/g, l => l.toUpperCase()),
+        dish: cleanFoodClass.replace(/\b\w/g, l => l.toUpperCase()),
         confidence: Math.round(confidence * 100) / 100,
         cuisine: "Unknown",
-        tags: [foodClass],
+        tags: [cleanFoodClass],
       };
       return NextResponse.json(result);
     }
