@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Recipe, FilterOptions } from "@/types";
+import connectDB from "@/lib/mongodb";
+import RecipeModel from "@/models/Recipe";
 
 // Spoonacular API integration via RapidAPI
 const SPOONACULAR_BASE_URL = "https://spoonacular-recipe-food-nutrition-v1.p.rapidapi.com/recipes";
@@ -841,6 +843,20 @@ export async function GET(request: NextRequest) {
           !recipes.some(existing => existing.id === recipe.id)
         );
         recipes = [...recipes, ...popularRecipes.slice(0, needed)];
+      }
+    }
+
+    // Save recipes to database
+    await connectDB();
+    for (const recipe of recipes) {
+      try {
+        await RecipeModel.findOneAndUpdate(
+          { id: recipe.id },
+          recipe,
+          { upsert: true, new: true }
+        );
+      } catch (error) {
+        console.error(`Failed to save recipe ${recipe.id}:`, error);
       }
     }
 
