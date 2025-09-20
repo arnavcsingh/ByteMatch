@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { Upload, Search, Filter, Heart, History, ChefHat, Loader2 } from "lucide-react";
 import ImageUpload from "./components/image-upload/ImageUpload";
 import RecipeCard from "./components/recipe-card/RecipeCard";
+import RecipeModal from "./components/recipe-modal/RecipeModal";
 import IngredientFilter from "./components/ingredient-filter/IngredientFilter";
 import { UploadedImage, ClassificationResult, Recipe, FilterOptions } from "@/types";
 import { StorageManager } from "@/helpers/storage";
@@ -20,6 +21,8 @@ export default function HomePage() {
   const [isLoadingRecipes, setIsLoadingRecipes] = useState(false);
   const [activeTab, setActiveTab] = useState<"upload" | "favorites" | "history">("upload");
   const [showFilters, setShowFilters] = useState(false);
+  const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   // Load data from localStorage on mount
   useEffect(() => {
@@ -138,8 +141,14 @@ export default function HomePage() {
   const handleViewRecipe = (recipe: Recipe) => {
     StorageManager.addToHistory(recipe.id);
     setHistory(StorageManager.getHistory());
-    // In a real app, this would open a detailed recipe view
-    alert(`Viewing recipe: ${recipe.title}`);
+    setSelectedRecipe(recipe);
+    setIsModalOpen(true);
+  };
+
+  // Handle modal close
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setSelectedRecipe(null);
   };
 
   // Get favorite recipes (mock data for demo)
@@ -420,6 +429,15 @@ export default function HomePage() {
           </div>
         )}
       </main>
+
+      {/* Recipe Modal */}
+      <RecipeModal
+        recipe={selectedRecipe}
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+        onToggleFavorite={handleToggleFavorite}
+        isFavorite={selectedRecipe ? favorites.includes(selectedRecipe.id) : false}
+      />
     </div>
   );
 }
