@@ -155,24 +155,29 @@ export default function HomePage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-br from-orange-50 via-red-50 to-pink-50">
       {/* Header */}
-      <header className="bg-white shadow-sm border-b">
+      <header className="bg-white/80 backdrop-blur-md shadow-lg border-b border-white/20 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center">
-              <ChefHat className="w-8 h-8 text-primary mr-3" />
-              <h1 className="text-xl font-bold text-gray-900">Recipe Generator</h1>
+              <div className="relative">
+                <ChefHat className="w-8 h-8 text-orange-500 mr-3 drop-shadow-sm" />
+                <div className="absolute -top-1 -right-1 w-3 h-3 bg-gradient-to-r from-orange-400 to-red-400 rounded-full animate-pulse"></div>
+              </div>
+              <h1 className="text-xl font-bold bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text text-transparent">
+                Recipe Generator
+              </h1>
             </div>
             
             {/* Navigation Tabs */}
-            <div className="flex space-x-1">
+            <div className="flex space-x-1 bg-white/50 backdrop-blur-sm rounded-xl p-1 shadow-lg">
               <button
                 onClick={() => setActiveTab("upload")}
-                className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
                   activeTab === "upload"
-                    ? "bg-primary text-white"
-                    : "text-gray-600 hover:text-gray-900"
+                    ? "bg-gradient-to-r from-orange-500 to-red-500 text-white shadow-lg transform scale-105"
+                    : "text-gray-600 hover:text-gray-900 hover:bg-white/50"
                 }`}
               >
                 <Upload className="w-4 h-4 mr-2 inline" />
@@ -180,10 +185,10 @@ export default function HomePage() {
               </button>
               <button
                 onClick={() => setActiveTab("favorites")}
-                className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
                   activeTab === "favorites"
-                    ? "bg-primary text-white"
-                    : "text-gray-600 hover:text-gray-900"
+                    ? "bg-gradient-to-r from-orange-500 to-red-500 text-white shadow-lg transform scale-105"
+                    : "text-gray-600 hover:text-gray-900 hover:bg-white/50"
                 }`}
               >
                 <Heart className="w-4 h-4 mr-2 inline" />
@@ -191,10 +196,10 @@ export default function HomePage() {
               </button>
               <button
                 onClick={() => setActiveTab("history")}
-                className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
                   activeTab === "history"
-                    ? "bg-primary text-white"
-                    : "text-gray-600 hover:text-gray-900"
+                    ? "bg-gradient-to-r from-orange-500 to-red-500 text-white shadow-lg transform scale-105"
+                    : "text-gray-600 hover:text-gray-900 hover:bg-white/50"
                 }`}
               >
                 <History className="w-4 h-4 mr-2 inline" />
@@ -210,12 +215,15 @@ export default function HomePage() {
           <div className="space-y-8">
             {/* Upload Section */}
             <div className="text-center">
-              <h2 className="text-3xl font-bold text-gray-900 mb-4">
-                Upload a Food Image
-              </h2>
-              <p className="text-lg text-gray-600 mb-8">
-                Get personalized recipes based on your dish
-              </p>
+              <div className="mb-8">
+                <h2 className="text-4xl font-bold bg-gradient-to-r from-orange-600 via-red-500 to-pink-500 bg-clip-text text-transparent mb-4">
+                  Upload a Food Image
+                </h2>
+                <p className="text-xl text-gray-600 mb-2">
+                  Get personalized recipes based on your dish
+                </p>
+                <div className="w-24 h-1 bg-gradient-to-r from-orange-400 to-red-400 rounded-full mx-auto"></div>
+              </div>
               
               <ImageUpload
                 onImageUpload={handleImageUpload}
@@ -228,7 +236,7 @@ export default function HomePage() {
                 <button
                   onClick={classifyImage}
                   disabled={isClassifying}
-                  className="mt-6 bg-primary text-white px-8 py-3 rounded-lg font-medium hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed flex items-center mx-auto"
+                  className="mt-8 bg-gradient-to-r from-orange-500 to-red-500 text-white px-10 py-4 rounded-xl font-semibold hover:from-orange-600 hover:to-red-600 disabled:opacity-50 disabled:cursor-not-allowed flex items-center mx-auto shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
                 >
                   {isClassifying ? (
                     <>
@@ -247,38 +255,47 @@ export default function HomePage() {
 
             {/* Classification Results */}
             {classification && (
-              <div className="bg-white rounded-lg shadow-md p-6">
-                <h3 className="text-xl font-semibold text-gray-900 mb-4">
-                  Image Analysis Results
+              <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl p-8 border border-white/20">
+                <h3 className="text-2xl font-bold bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text text-transparent mb-6 text-center">
+                  🎯 Image Analysis Results
                 </h3>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <div className="text-center">
-                    <p className="text-sm text-gray-600">Dish Type</p>
-                    <p className="text-lg font-semibold text-gray-900">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  <div className="text-center bg-gradient-to-br from-orange-50 to-red-50 rounded-xl p-6 border border-orange-100">
+                    <div className="w-12 h-12 bg-gradient-to-r from-orange-400 to-red-400 rounded-full flex items-center justify-center mx-auto mb-3">
+                      <span className="text-white font-bold text-lg">🍽️</span>
+                    </div>
+                    <p className="text-sm text-gray-600 mb-1">Dish Type</p>
+                    <p className="text-xl font-bold text-gray-900">
                       {classification.dish}
                     </p>
                   </div>
-                  <div className="text-center">
-                    <p className="text-sm text-gray-600">Cuisine</p>
-                    <p className="text-lg font-semibold text-gray-900">
+                  <div className="text-center bg-gradient-to-br from-orange-50 to-red-50 rounded-xl p-6 border border-orange-100">
+                    <div className="w-12 h-12 bg-gradient-to-r from-orange-400 to-red-400 rounded-full flex items-center justify-center mx-auto mb-3">
+                      <span className="text-white font-bold text-lg">🌍</span>
+                    </div>
+                    <p className="text-sm text-gray-600 mb-1">Cuisine</p>
+                    <p className="text-xl font-bold text-gray-900">
                       {classification.cuisine}
                     </p>
                   </div>
-                  <div className="text-center">
-                    <p className="text-sm text-gray-600">Confidence</p>
-                    <p className="text-lg font-semibold text-gray-900">
+                  <div className="text-center bg-gradient-to-br from-orange-50 to-red-50 rounded-xl p-6 border border-orange-100">
+                    <div className="w-12 h-12 bg-gradient-to-r from-orange-400 to-red-400 rounded-full flex items-center justify-center mx-auto mb-3">
+                      <span className="text-white font-bold text-lg">📊</span>
+                    </div>
+                    <p className="text-sm text-gray-600 mb-1">Confidence</p>
+                    <p className="text-xl font-bold text-gray-900">
                       {Math.round(classification.confidence * 100)}%
                     </p>
                   </div>
                 </div>
                 {classification.tags.length > 0 && (
-                  <div className="mt-4">
-                    <p className="text-sm text-gray-600 mb-2">Detected Elements:</p>
-                    <div className="flex flex-wrap gap-2">
+                  <div className="mt-8">
+                    <p className="text-lg font-semibold text-gray-700 mb-4 text-center">Detected Elements:</p>
+                    <div className="flex flex-wrap gap-3 justify-center">
                       {classification.tags.map((tag, index) => (
                         <span
                           key={index}
-                          className="px-3 py-1 bg-blue-100 text-blue-700 text-sm rounded-full"
+                          className="px-4 py-2 bg-gradient-to-r from-orange-100 to-red-100 text-orange-700 text-sm rounded-full border border-orange-200 font-medium shadow-sm hover:shadow-md transition-shadow"
                         >
                           {tag}
                         </span>
@@ -291,12 +308,12 @@ export default function HomePage() {
 
             {/* Filters */}
             <div className="flex justify-between items-center">
-              <h3 className="text-xl font-semibold text-gray-900">
-                Recipe Filters
+              <h3 className="text-2xl font-bold bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text text-transparent">
+                🔍 Recipe Filters
               </h3>
               <button
                 onClick={() => setShowFilters(!showFilters)}
-                className="flex items-center px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50"
+                className="flex items-center px-6 py-3 bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-xl text-sm font-semibold hover:from-orange-600 hover:to-red-600 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
               >
                 <Filter className="w-4 h-4 mr-2" />
                 {showFilters ? "Hide" : "Show"} Filters
@@ -313,16 +330,18 @@ export default function HomePage() {
             {/* Recipes Grid */}
             {recipes.length > 0 && (
               <div>
-                <h3 className="text-xl font-semibold text-gray-900 mb-6">
-                  Recommended Recipes
+                <h3 className="text-3xl font-bold bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text text-transparent mb-8 text-center">
+                  🍳 Recommended Recipes
                 </h3>
                 {isLoadingRecipes ? (
-                  <div className="flex justify-center items-center py-12">
-                    <Loader2 className="w-8 h-8 animate-spin text-primary" />
-                    <span className="ml-2 text-gray-600">Loading recipes...</span>
+                  <div className="flex justify-center items-center py-16">
+                    <div className="text-center">
+                      <Loader2 className="w-12 h-12 animate-spin text-orange-500 mx-auto mb-4" />
+                      <span className="text-xl text-gray-600 font-medium">Loading delicious recipes...</span>
+                    </div>
                   </div>
                 ) : (
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                     {recipes.map((recipe) => (
                       <RecipeCard
                         key={recipe.id}
@@ -341,19 +360,21 @@ export default function HomePage() {
 
         {activeTab === "favorites" && (
           <div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">
-              Your Favorite Recipes
+            <h2 className="text-3xl font-bold bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text text-transparent mb-8 text-center">
+              ❤️ Your Favorite Recipes
             </h2>
             {favorites.length === 0 ? (
-              <div className="text-center py-12">
-                <Heart className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-                <p className="text-lg text-gray-600">No favorite recipes yet</p>
-                <p className="text-sm text-gray-500">
-                  Upload an image and add recipes to your favorites
-                </p>
+              <div className="text-center py-16">
+                <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl p-12 border border-white/20 max-w-md mx-auto">
+                  <Heart className="w-20 h-20 text-orange-300 mx-auto mb-6" />
+                  <p className="text-xl text-gray-700 font-semibold mb-2">No favorite recipes yet</p>
+                  <p className="text-gray-500">
+                    Upload an image and add recipes to your favorites
+                  </p>
+                </div>
               </div>
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {getFavoriteRecipes().map((recipe) => (
                   <RecipeCard
                     key={recipe.id}
@@ -370,19 +391,21 @@ export default function HomePage() {
 
         {activeTab === "history" && (
           <div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">
-              Recently Viewed Recipes
+            <h2 className="text-3xl font-bold bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text text-transparent mb-8 text-center">
+              📚 Recently Viewed Recipes
             </h2>
             {history.length === 0 ? (
-              <div className="text-center py-12">
-                <History className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-                <p className="text-lg text-gray-600">No recent activity</p>
-                <p className="text-sm text-gray-500">
-                  Start exploring recipes to build your history
-                </p>
+              <div className="text-center py-16">
+                <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl p-12 border border-white/20 max-w-md mx-auto">
+                  <History className="w-20 h-20 text-orange-300 mx-auto mb-6" />
+                  <p className="text-xl text-gray-700 font-semibold mb-2">No recent activity</p>
+                  <p className="text-gray-500">
+                    Start exploring recipes to build your history
+                  </p>
+                </div>
               </div>
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {getHistoryRecipes().map((recipe) => (
                   <RecipeCard
                     key={recipe.id}

@@ -10,12 +10,64 @@ interface IngredientFilterProps {
 }
 
 const commonIngredients = [
-  "Chicken", "Beef", "Pork", "Fish", "Shrimp", "Eggs",
-  "Rice", "Pasta", "Bread", "Potatoes", "Onions", "Garlic",
-  "Tomatoes", "Cheese", "Milk", "Butter", "Olive oil",
-  "Salt", "Pepper", "Herbs", "Spices", "Lettuce", "Carrots",
-  "Bell peppers", "Mushrooms", "Broccoli", "Spinach", "Avocado",
-  "Lemon", "Lime", "Ginger", "Cilantro", "Basil", "Oregano"
+  // Proteins
+  "Chicken", "Beef", "Pork", "Lamb", "Turkey", "Duck",
+  "Fish", "Salmon", "Tuna", "Cod", "Shrimp", "Crab", "Lobster", "Scallops",
+  "Eggs", "Bacon", "Sausage", "Ham", "Ground beef", "Ground turkey",
+  
+  // Grains & Starches
+  "Rice", "Brown rice", "Pasta", "Spaghetti", "Penne", "Fettuccine", "Rigatoni",
+  "Bread", "White bread", "Whole wheat bread", "Tortillas", "Naan",
+  "Potatoes", "Sweet potatoes", "Quinoa", "Couscous", "Barley", "Oats",
+  
+  // Vegetables
+  "Onions", "Garlic", "Tomatoes", "Cherry tomatoes", "Bell peppers", "Red bell pepper", "Green bell pepper",
+  "Carrots", "Celery", "Mushrooms", "Button mushrooms", "Portobello mushrooms",
+  "Broccoli", "Cauliflower", "Spinach", "Kale", "Lettuce", "Romaine lettuce",
+  "Cucumber", "Zucchini", "Eggplant", "Asparagus", "Green beans", "Peas",
+  "Corn", "Avocado", "Artichokes", "Brussels sprouts", "Cabbage", "Radishes",
+  
+  // Dairy & Eggs
+  "Cheese", "Cheddar cheese", "Mozzarella", "Parmesan", "Feta", "Goat cheese",
+  "Milk", "Butter", "Heavy cream", "Sour cream", "Greek yogurt", "Cream cheese",
+  
+  // Oils & Condiments
+  "Olive oil", "Vegetable oil", "Coconut oil", "Sesame oil",
+  "Salt", "Black pepper", "Sea salt", "Kosher salt",
+  "Soy sauce", "Worcestershire sauce", "Hot sauce", "Ketchup", "Mustard",
+  "Mayonnaise", "Balsamic vinegar", "Apple cider vinegar", "Rice vinegar",
+  
+  // Herbs & Spices
+  "Herbs", "Spices", "Basil", "Oregano", "Thyme", "Rosemary", "Parsley",
+  "Cilantro", "Dill", "Mint", "Sage", "Bay leaves", "Chives",
+  "Ginger", "Garlic powder", "Onion powder", "Paprika", "Cumin", "Coriander",
+  "Cinnamon", "Nutmeg", "Allspice", "Red pepper flakes", "Cayenne pepper",
+  "Turmeric", "Curry powder", "Italian seasoning", "Herbs de Provence",
+  
+  // Fruits
+  "Lemon", "Lime", "Orange", "Apple", "Banana", "Strawberries", "Blueberries",
+  "Raspberries", "Blackberries", "Pineapple", "Mango", "Peach", "Pear",
+  "Grapes", "Cherries", "Cranberries", "Raisins", "Dates", "Figs",
+  
+  // Nuts & Seeds
+  "Almonds", "Walnuts", "Pecans", "Pistachios", "Cashews", "Hazelnuts",
+  "Peanuts", "Pine nuts", "Sesame seeds", "Chia seeds", "Flax seeds",
+  "Sunflower seeds", "Pumpkin seeds",
+  
+  // Legumes & Beans
+  "Black beans", "Kidney beans", "Chickpeas", "Lentils", "Green lentils", "Red lentils",
+  "Cannellini beans", "Pinto beans", "Navy beans", "Split peas",
+  
+  // Pantry Staples
+  "Flour", "All-purpose flour", "Whole wheat flour", "Baking powder", "Baking soda",
+  "Sugar", "Brown sugar", "Honey", "Maple syrup", "Vanilla extract",
+  "Chocolate", "Dark chocolate", "Milk chocolate", "Cocoa powder",
+  "Coconut", "Coconut milk", "Almond milk", "Soy milk", "Oat milk",
+  
+  // Specialty Items
+  "Tahini", "Hummus", "Pesto", "Salsa", "Guacamole", "Sriracha",
+  "Fish sauce", "Oyster sauce", "Hoisin sauce", "Teriyaki sauce",
+  "Wine", "Red wine", "White wine", "Beer", "Stock", "Chicken stock", "Beef stock", "Vegetable stock"
 ];
 
 export default function IngredientFilter({

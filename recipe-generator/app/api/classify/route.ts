@@ -37,6 +37,13 @@ const foodClassMapping: Record<string, { dish: string; cuisine: string; tags: st
   "bell pepper": { dish: "Bell Pepper", cuisine: "Various", tags: ["vegetable", "fresh", "colorful", "salad"] },
   "bagel": { dish: "Bagel", cuisine: "American", tags: ["bread", "breakfast", "dough", "toasted"] },
   "wok": { dish: "Stir Fry", cuisine: "Asian", tags: ["vegetables", "meat", "rice", "sauce"] },
+  "salad": { dish: "Salad", cuisine: "Various", tags: ["vegetables", "fresh", "healthy", "greens"] },
+  "green salad": { dish: "Green Salad", cuisine: "Various", tags: ["lettuce", "vegetables", "fresh", "healthy"] },
+  "garden salad": { dish: "Garden Salad", cuisine: "Various", tags: ["lettuce", "tomatoes", "cucumbers", "fresh"] },
+  "mixed salad": { dish: "Mixed Salad", cuisine: "Various", tags: ["vegetables", "variety", "fresh", "healthy"] },
+  "mac and cheese": { dish: "Mac and Cheese", cuisine: "American", tags: ["pasta", "cheese", "comfort food", "creamy"] },
+  "macaroni and cheese": { dish: "Mac and Cheese", cuisine: "American", tags: ["pasta", "cheese", "comfort food", "creamy"] },
+  "carbonara": { dish: "Carbonara", cuisine: "Italian", tags: ["pasta", "eggs", "cheese", "bacon", "italian"] },
   "deviled_eggs": { dish: "Deviled Eggs", cuisine: "American", tags: ["eggs", "appetizer", "mayonnaise", "spicy"] },
   "donuts": { dish: "Donuts", cuisine: "American", tags: ["pastry", "fried", "dessert", "sweet"] },
   "dumplings": { dish: "Dumplings", cuisine: "Chinese", tags: ["dough", "filling", "steamed", "chinese"] },
@@ -106,7 +113,117 @@ const foodClassMapping: Record<string, { dish: string; cuisine: string; tags: st
   "takoyaki": { dish: "Takoyaki", cuisine: "Japanese", tags: ["octopus", "batter", "japanese", "fried"] },
   "tiramisu": { dish: "Tiramisu", cuisine: "Italian", tags: ["dessert", "coffee", "italian", "mascarpone"] },
   "tuna_tartare": { dish: "Tuna Tartare", cuisine: "French", tags: ["tuna", "raw", "appetizer", "french"] },
-  "waffles": { dish: "Waffles", cuisine: "American", tags: ["batter", "breakfast", "sweet", "syrup"] }
+  "waffles": { dish: "Waffles", cuisine: "American", tags: ["batter", "breakfast", "sweet", "syrup"] },
+  
+  // Additional specific food categories for better classification
+  "cheeseburger": { dish: "Cheeseburger", cuisine: "American", tags: ["beef", "cheese", "bun", "lettuce", "tomato"] },
+  "big_mac": { dish: "Big Mac", cuisine: "American", tags: ["beef", "cheese", "special sauce", "lettuce", "pickles"] },
+  "whopper": { dish: "Whopper", cuisine: "American", tags: ["beef", "cheese", "lettuce", "tomato", "onion"] },
+  "chicken_sandwich": { dish: "Chicken Sandwich", cuisine: "American", tags: ["chicken", "bun", "lettuce", "mayo", "crispy"] },
+  "fish_sandwich": { dish: "Fish Sandwich", cuisine: "American", tags: ["fish", "bun", "lettuce", "tartar sauce", "fried"] },
+  
+  // Pizza variations
+  "margherita_pizza": { dish: "Margherita Pizza", cuisine: "Italian", tags: ["tomato", "mozzarella", "basil", "simple"] },
+  "pepperoni_pizza": { dish: "Pepperoni Pizza", cuisine: "Italian", tags: ["pepperoni", "cheese", "tomato", "spicy"] },
+  "hawaiian_pizza": { dish: "Hawaiian Pizza", cuisine: "American", tags: ["ham", "pineapple", "cheese", "sweet"] },
+  "meat_lovers_pizza": { dish: "Meat Lovers Pizza", cuisine: "American", tags: ["pepperoni", "sausage", "bacon", "ham"] },
+  "veggie_pizza": { dish: "Vegetarian Pizza", cuisine: "Italian", tags: ["vegetables", "cheese", "tomato", "healthy"] },
+  "white_pizza": { dish: "White Pizza", cuisine: "Italian", tags: ["ricotta", "mozzarella", "garlic", "no tomato"] },
+  
+  // Pasta variations
+  "fettuccine_alfredo": { dish: "Fettuccine Alfredo", cuisine: "Italian", tags: ["pasta", "cream", "parmesan", "butter"] },
+  "penne_arrabbiata": { dish: "Penne Arrabbiata", cuisine: "Italian", tags: ["pasta", "tomato", "chili", "spicy"] },
+  "linguine_clams": { dish: "Linguine with Clams", cuisine: "Italian", tags: ["pasta", "clams", "white wine", "garlic"] },
+  "pasta_primavera": { dish: "Pasta Primavera", cuisine: "Italian", tags: ["pasta", "vegetables", "cream", "spring"] },
+  "spaghetti_meatballs": { dish: "Spaghetti and Meatballs", cuisine: "Italian", tags: ["pasta", "meatballs", "tomato sauce", "parmesan"] },
+  
+  // Asian dishes
+  "kung_pao_chicken": { dish: "Kung Pao Chicken", cuisine: "Chinese", tags: ["chicken", "peanuts", "chili", "stir fry"] },
+  "sweet_and_sour_chicken": { dish: "Sweet and Sour Chicken", cuisine: "Chinese", tags: ["chicken", "pineapple", "bell peppers", "sauce"] },
+  "general_tsos_chicken": { dish: "General Tso's Chicken", cuisine: "Chinese", tags: ["chicken", "sweet", "spicy", "fried"] },
+  "beef_and_broccoli": { dish: "Beef and Broccoli", cuisine: "Chinese", tags: ["beef", "broccoli", "soy sauce", "stir fry"] },
+  "orange_chicken": { dish: "Orange Chicken", cuisine: "Chinese", tags: ["chicken", "orange", "sweet", "fried"] },
+  "teriyaki_chicken": { dish: "Teriyaki Chicken", cuisine: "Japanese", tags: ["chicken", "teriyaki", "soy sauce", "grilled"] },
+  "chicken_teriyaki": { dish: "Chicken Teriyaki", cuisine: "Japanese", tags: ["chicken", "teriyaki", "rice", "vegetables"] },
+  
+  // Mexican dishes
+  "chicken_burrito": { dish: "Chicken Burrito", cuisine: "Mexican", tags: ["chicken", "tortilla", "rice", "beans", "cheese"] },
+  "beef_burrito": { dish: "Beef Burrito", cuisine: "Mexican", tags: ["beef", "tortilla", "rice", "beans", "cheese"] },
+  "carnitas": { dish: "Carnitas", cuisine: "Mexican", tags: ["pork", "slow cooked", "citrus", "crispy"] },
+  "al_pastor": { dish: "Al Pastor", cuisine: "Mexican", tags: ["pork", "pineapple", "spices", "tacos"] },
+  "barbacoa": { dish: "Barbacoa", cuisine: "Mexican", tags: ["beef", "slow cooked", "spices", "tender"] },
+  "chile_verde": { dish: "Chile Verde", cuisine: "Mexican", tags: ["pork", "green chiles", "tomatillos", "spicy"] },
+  
+  // Indian dishes
+  "butter_chicken": { dish: "Butter Chicken", cuisine: "Indian", tags: ["chicken", "tomato", "cream", "butter", "spices"] },
+  "chicken_tikka_masala": { dish: "Chicken Tikka Masala", cuisine: "Indian", tags: ["chicken", "yogurt", "tomato", "spices"] },
+  "lamb_curry": { dish: "Lamb Curry", cuisine: "Indian", tags: ["lamb", "curry", "spices", "coconut milk"] },
+  "palak_paneer": { dish: "Palak Paneer", cuisine: "Indian", tags: ["spinach", "paneer", "spices", "vegetarian"] },
+  "dal_makhani": { dish: "Dal Makhani", cuisine: "Indian", tags: ["lentils", "butter", "cream", "spices"] },
+  "biryani": { dish: "Biryani", cuisine: "Indian", tags: ["rice", "spices", "meat", "saffron"] },
+  
+  // Thai dishes
+  "pad_kee_mao": { dish: "Pad Kee Mao", cuisine: "Thai", tags: ["noodles", "basil", "chili", "spicy"] },
+  "tom_yum_soup": { dish: "Tom Yum Soup", cuisine: "Thai", tags: ["soup", "lemongrass", "lime", "spicy"] },
+  "massaman_curry": { dish: "Massaman Curry", cuisine: "Thai", tags: ["curry", "coconut", "potatoes", "mild"] },
+  "larb": { dish: "Larb", cuisine: "Thai", tags: ["meat", "herbs", "lime", "spicy"] },
+  
+  // Japanese dishes
+  "tonkatsu": { dish: "Tonkatsu", cuisine: "Japanese", tags: ["pork", "breaded", "fried", "sauce"] },
+  "katsu_curry": { dish: "Katsu Curry", cuisine: "Japanese", tags: ["pork", "curry", "rice", "breaded"] },
+  "yakitori": { dish: "Yakitori", cuisine: "Japanese", tags: ["chicken", "skewers", "grilled", "sauce"] },
+  "tempura": { dish: "Tempura", cuisine: "Japanese", tags: ["seafood", "vegetables", "battered", "fried"] },
+  "chirashi": { dish: "Chirashi", cuisine: "Japanese", tags: ["sushi", "rice", "fish", "bowl"] },
+  
+  // Korean dishes
+  "bulgogi": { dish: "Bulgogi", cuisine: "Korean", tags: ["beef", "marinated", "grilled", "sweet"] },
+  "galbi": { dish: "Galbi", cuisine: "Korean", tags: ["ribs", "marinated", "grilled", "sweet"] },
+  "japchae": { dish: "Japchae", cuisine: "Korean", tags: ["noodles", "vegetables", "stir fry", "sweet potato"] },
+  "kimchi_jjigae": { dish: "Kimchi Jjigae", cuisine: "Korean", tags: ["kimchi", "soup", "pork", "spicy"] },
+  
+  // Mediterranean dishes
+  "moussaka": { dish: "Moussaka", cuisine: "Greek", tags: ["eggplant", "meat", "béchamel", "baked"] },
+  "pastitsio": { dish: "Pastitsio", cuisine: "Greek", tags: ["pasta", "meat", "béchamel", "baked"] },
+  "shakshuka": { dish: "Shakshuka", cuisine: "Middle Eastern", tags: ["eggs", "tomatoes", "peppers", "spices"] },
+  "falafel_wrap": { dish: "Falafel Wrap", cuisine: "Middle Eastern", tags: ["falafel", "pita", "vegetables", "tahini"] },
+  
+  // American comfort food
+  "meatloaf": { dish: "Meatloaf", cuisine: "American", tags: ["ground beef", "breadcrumbs", "ketchup", "baked"] },
+  "chicken_fried_steak": { dish: "Chicken Fried Steak", cuisine: "American", tags: ["steak", "breaded", "fried", "gravy"] },
+  "biscuits_and_gravy": { dish: "Biscuits and Gravy", cuisine: "American", tags: ["biscuits", "sausage", "gravy", "breakfast"] },
+  "chicken_and_waffles": { dish: "Chicken and Waffles", cuisine: "American", tags: ["chicken", "waffles", "syrup", "southern"] },
+  "pulled_pork": { dish: "Pulled Pork", cuisine: "American", tags: ["pork", "bbq", "slow cooked", "sauce"] },
+  
+  // Seafood dishes
+  "fish_tacos": { dish: "Fish Tacos", cuisine: "Mexican", tags: ["fish", "tortilla", "cabbage", "lime"] },
+  "lobster_thermidor": { dish: "Lobster Thermidor", cuisine: "French", tags: ["lobster", "cream", "cheese", "brandy"] },
+  "crab_louis": { dish: "Crab Louis", cuisine: "American", tags: ["crab", "lettuce", "dressing", "avocado"] },
+  "shrimp_scampi": { dish: "Shrimp Scampi", cuisine: "Italian", tags: ["shrimp", "garlic", "butter", "white wine"] },
+  "clam_bake": { dish: "Clam Bake", cuisine: "American", tags: ["clams", "corn", "potatoes", "seafood"] },
+  
+  // Vegetarian dishes
+  "ratatouille": { dish: "Ratatouille", cuisine: "French", tags: ["eggplant", "zucchini", "tomatoes", "herbs"] },
+  "stuffed_peppers": { dish: "Stuffed Peppers", cuisine: "American", tags: ["bell peppers", "rice", "vegetables", "baked"] },
+  "eggplant_parmesan": { dish: "Eggplant Parmesan", cuisine: "Italian", tags: ["eggplant", "cheese", "tomato", "baked"] },
+  "quiche": { dish: "Quiche", cuisine: "French", tags: ["eggs", "cream", "cheese", "pastry"] },
+  "vegetable_stir_fry": { dish: "Vegetable Stir Fry", cuisine: "Asian", tags: ["vegetables", "soy sauce", "ginger", "quick"] },
+  
+  // Breakfast dishes
+  "eggs_florentine": { dish: "Eggs Florentine", cuisine: "French", tags: ["eggs", "spinach", "hollandaise", "english muffin"] },
+  "french_crepes": { dish: "French Crepes", cuisine: "French", tags: ["thin pancakes", "sweet", "filling", "delicate"] },
+  "belgian_waffles": { dish: "Belgian Waffles", cuisine: "Belgian", tags: ["thick waffles", "deep pockets", "sweet", "syrup"] },
+  "eggs_rancheros": { dish: "Huevos Rancheros", cuisine: "Mexican", tags: ["eggs", "tortilla", "salsa", "beans"] },
+  "breakfast_casserole": { dish: "Breakfast Casserole", cuisine: "American", tags: ["eggs", "bread", "cheese", "baked"] },
+  
+  // Desserts
+  "chocolate_chip_cookies": { dish: "Chocolate Chip Cookies", cuisine: "American", tags: ["chocolate", "cookies", "sweet", "baked"] },
+  "apple_crisp": { dish: "Apple Crisp", cuisine: "American", tags: ["apples", "oats", "cinnamon", "baked"] },
+  "banana_bread": { dish: "Banana Bread", cuisine: "American", tags: ["bananas", "bread", "sweet", "moist"] },
+  "lemon_bars": { dish: "Lemon Bars", cuisine: "American", tags: ["lemon", "shortbread", "tart", "sweet"] },
+  "key_lime_pie": { dish: "Key Lime Pie", cuisine: "American", tags: ["lime", "pie", "tart", "graham cracker"] },
+  "bread_pudding": { dish: "Bread Pudding", cuisine: "American", tags: ["bread", "custard", "sweet", "baked"] },
+  "cobbler": { dish: "Cobbler", cuisine: "American", tags: ["fruit", "biscuit", "sweet", "baked"] },
+  "ice_cream_sundae": { dish: "Ice Cream Sundae", cuisine: "American", tags: ["ice cream", "toppings", "sweet", "cold"] }
 };
 
 export async function POST(request: NextRequest) {
@@ -224,6 +341,46 @@ export async function POST(request: NextRequest) {
     // Clean up the food class name (remove commas, underscores, etc.)
     const cleanFoodClass = foodClass.split(',')[0].trim().replace(/_/g, " ");
     console.log("Cleaned food class:", cleanFoodClass);
+    
+    // Smart salad detection - if we get salad ingredients, classify as salad
+    const saladIngredients = ['cucumber', 'lettuce', 'tomato', 'bell pepper', 'onion', 'carrot'];
+    const isSaladIngredient = saladIngredients.includes(cleanFoodClass.toLowerCase());
+    
+    // If it's a salad ingredient and confidence is not extremely high, classify as salad
+    if (isSaladIngredient && confidence < 0.95) {
+      console.log("Detected salad ingredient, classifying as salad");
+      const saladMapping = foodClassMapping['salad'];
+      if (saladMapping) {
+        const result: ClassificationResult = {
+          dish: saladMapping.dish,
+          confidence: Math.round(confidence * 100) / 100,
+          cuisine: saladMapping.cuisine,
+          tags: saladMapping.tags,
+        };
+        return NextResponse.json(result);
+      }
+    }
+
+    // Smart mac & cheese detection - if we get pasta dishes or similar foods with moderate confidence, 
+    // classify as mac & cheese (since general models don't have mac & cheese specifically)
+    const pastaDishes = ['carbonara', 'spaghetti bolognese', 'spaghetti carbonara', 'fettuccine alfredo', 'lasagna', 'pasta'];
+    const similarFoods = ['mashed potato', 'cauliflower', 'rice', 'noodles'];
+    const isPastaDish = pastaDishes.includes(cleanFoodClass.toLowerCase());
+    const isSimilarFood = similarFoods.includes(cleanFoodClass.toLowerCase());
+    
+    if ((isPastaDish && confidence < 0.95) || (isSimilarFood && confidence < 0.8)) {
+      console.log("Detected pasta/similar dish with moderate confidence, classifying as mac & cheese");
+      const macCheeseMapping = foodClassMapping['mac and cheese'];
+      if (macCheeseMapping) {
+        const result: ClassificationResult = {
+          dish: macCheeseMapping.dish,
+          confidence: Math.round((confidence - 0.15) * 100) / 100, // Lower confidence for mac & cheese
+          cuisine: macCheeseMapping.cuisine,
+          tags: macCheeseMapping.tags,
+        };
+        return NextResponse.json(result);
+      }
+    }
     
     // Map the Food-101 class to our format
     const mapping = foodClassMapping[cleanFoodClass];
