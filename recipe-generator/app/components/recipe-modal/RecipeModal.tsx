@@ -1,8 +1,9 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { X, Clock, Users, ChefHat, ExternalLink, Heart, Bookmark, Share2, Sparkles, Star, Zap } from "lucide-react";
+import { X, Clock, Users, ChefHat, ExternalLink, Heart, Bookmark, Share2, Sparkles, Star, Zap, AlertCircle } from "lucide-react";
 import { Recipe } from "@/types";
+import { calculateRecipeNutrition } from "@/helpers/nutrition-calculator";
 
 interface RecipeModalProps {
   recipe: Recipe | null;
@@ -20,7 +21,11 @@ export default function RecipeModal({
   isFavorite = false,
 }: RecipeModalProps) {
   const [imageError, setImageError] = useState(false);
-  const [activeTab, setActiveTab] = useState<'ingredients' | 'instructions'>('ingredients');
+  const [activeTab, setActiveTab] = useState<'ingredients' | 'nutrition' | 'instructions'>('ingredients');
+  const [nutrition, setNutrition] = useState<{calories: number; protein: number; carbs: number; fat: number} | null>(null);
+  const [nutritionLoading, setNutritionLoading] = useState(false);
+  const [nutritionError, setNutritionError] = useState<string | null>(null);
+
 
   useEffect(() => {
     if (isOpen) {
@@ -33,6 +38,43 @@ export default function RecipeModal({
       document.body.style.overflow = 'unset';
     };
   }, [isOpen]);
+
+  // Calculate nutrition when modal opens
+  useEffect(() => {
+    const calculateNutritionData = () => {
+      if (!recipe) {
+        return;
+      }
+
+      const ingredientsToUse = recipe.ingredients;
+      
+      if (!ingredientsToUse || ingredientsToUse.length === 0) {
+        return;
+      }
+
+      setNutritionLoading(true);
+      setNutritionError(null);
+
+      try {
+        const result = calculateRecipeNutrition(ingredientsToUse, recipe.servings || 4);
+        
+        if (result && result.nutrition) {
+          setNutrition(result.nutrition);
+        } else {
+          setNutritionError('Unable to calculate nutrition information');
+        }
+      } catch (error) {
+        console.error('Error calculating nutrition:', error);
+        setNutritionError('Unable to calculate nutrition information');
+      } finally {
+        setNutritionLoading(false);
+      }
+    };
+
+    if (isOpen && recipe) {
+      calculateNutritionData();
+    }
+  }, [isOpen, recipe]);
 
   if (!recipe || !isOpen) return null;
 
@@ -237,6 +279,17 @@ export default function RecipeModal({
               Ingredients ({recipe.ingredients.length})
             </button>
             <button
+              onClick={() => setActiveTab('nutrition')}
+              className={`group flex-1 py-4 px-8 rounded-xl font-bold transition-all duration-300 flex items-center justify-center ${
+                activeTab === 'nutrition'
+                  ? 'bg-gradient-to-r from-green-500 to-emerald-500 text-white shadow-xl transform scale-105'
+                  : 'text-gray-700 hover:text-green-600 hover:bg-white/70'
+              }`}
+            >
+              <Zap className="w-5 h-5 mr-3 group-hover:rotate-12 transition-transform duration-300" />
+              Nutrition
+            </button>
+            <button
               onClick={() => setActiveTab('instructions')}
               className={`group flex-1 py-4 px-8 rounded-xl font-bold transition-all duration-300 flex items-center justify-center ${
                 activeTab === 'instructions'
@@ -244,14 +297,14 @@ export default function RecipeModal({
                   : 'text-gray-700 hover:text-orange-600 hover:bg-white/70'
               }`}
             >
-              <Zap className="w-5 h-5 mr-3 group-hover:rotate-12 transition-transform duration-300" />
+              <Sparkles className="w-5 h-5 mr-3 group-hover:rotate-12 transition-transform duration-300" />
               Instructions ({recipe.instructions.length})
             </button>
           </div>
 
           {/* Enhanced Tab Content */}
           <div className="mb-10">
-            {activeTab === 'ingredients' ? (
+            {activeTab === 'ingredients' && (
               <div className="space-y-6">
                 <div className="flex items-center mb-6">
                   <ChefHat className="w-6 h-6 text-orange-500 mr-3" />
@@ -271,10 +324,61 @@ export default function RecipeModal({
                   ))}
                 </div>
               </div>
-            ) : (
+            )}
+
+            {activeTab === 'nutrition' && (
               <div className="space-y-6">
                 <div className="flex items-center mb-6">
-                  <Zap className="w-6 h-6 text-blue-500 mr-3" />
+                  <Zap className="w-6 h-6 text-green-500 mr-3" />
+                  <h3 className="text-2xl font-bold text-gray-900 font-serif">⚡ Nutrition (per serving)</h3>
+                </div>
+                
+                {nutritionLoading && (
+                  <div className="flex items-center justify-center py-12">
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-500"></div>
+                    <span className="ml-4 text-lg text-gray-600">Loading nutrition info...</span>
+                  </div>
+                )}
+
+                {nutrition && (
+                  <div className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-3xl p-8 border border-green-200/50 shadow-xl">
+                    <div className="grid grid-cols-2 gap-6 mb-6">
+                      <div className="text-center bg-white/60 rounded-2xl p-6 shadow-lg">
+                        <div className="text-4xl font-bold text-green-700 mb-2">{nutrition.calories}</div>
+                        <div className="text-sm text-green-600 font-semibold uppercase tracking-wide">Calories</div>
+                      </div>
+                      <div className="text-center bg-white/60 rounded-2xl p-6 shadow-lg">
+                        <div className="text-4xl font-bold text-blue-700 mb-2">{nutrition.protein}g</div>
+                        <div className="text-sm text-blue-600 font-semibold uppercase tracking-wide">Protein</div>
+                      </div>
+                      <div className="text-center bg-white/60 rounded-2xl p-6 shadow-lg">
+                        <div className="text-4xl font-bold text-orange-700 mb-2">{nutrition.carbs}g</div>
+                        <div className="text-sm text-orange-600 font-semibold uppercase tracking-wide">Carbs</div>
+                      </div>
+                      <div className="text-center bg-white/60 rounded-2xl p-6 shadow-lg">
+                        <div className="text-4xl font-bold text-purple-700 mb-2">{nutrition.fat}g</div>
+                        <div className="text-sm text-purple-600 font-semibold uppercase tracking-wide">Fat</div>
+                      </div>
+                    </div>
+                    
+
+                  </div>
+                )}
+
+                {nutritionError && (
+                  <div className="flex items-center justify-center py-12 bg-gray-50 rounded-3xl border border-gray-200/50">
+                    <AlertCircle className="w-8 h-8 text-gray-500 mr-4" />
+                    <span className="text-lg text-gray-600">Unable to retrieve nutrition information.</span>
+                  </div>
+                )}
+
+              </div>
+            )}
+
+            {activeTab === 'instructions' && (
+              <div className="space-y-6">
+                <div className="flex items-center mb-6">
+                  <Sparkles className="w-6 h-6 text-blue-500 mr-3" />
                   <h3 className="text-2xl font-bold text-gray-900 font-serif">👨‍🍳 Instructions</h3>
                 </div>
                 <div className="space-y-6">
