@@ -8,32 +8,6 @@ import { pexelsService } from "@/lib/pexels";
 const SPOONACULAR_BASE_URL = "https://spoonacular-recipe-food-nutrition-v1.p.rapidapi.com/recipes";
 
 // Fetch detailed recipe information including instructions and ingredients
-async function fetchDetailedRecipeInfo(recipeId: number, apiKey: string): Promise<any> {
-  try {
-    const response = await fetch(`${SPOONACULAR_BASE_URL}/${recipeId}/information?includeNutrition=false`, {
-      headers: {
-        "x-rapidapi-host": "spoonacular-recipe-food-nutrition-v1.p.rapidapi.com",
-        "x-rapidapi-key": apiKey,
-      },
-    });
-
-    if (!response.ok) {
-      console.error(`Failed to fetch detailed recipe ${recipeId}: ${response.status}`);
-      return {};
-    }
-
-    const data = await response.json();
-    return {
-      extendedIngredients: data.extendedIngredients,
-      analyzedInstructions: data.analyzedInstructions,
-      preparationMinutes: data.preparationMinutes,
-      cookingMinutes: data.cookingMinutes
-    };
-  } catch (error) {
-    console.error(`Error fetching detailed recipe ${recipeId}:`, error);
-    return {};
-  }
-}
 
 // Helper function to enhance recipe image with Pexels if available and highly similar
 async function enhanceRecipeImage(recipe: Recipe): Promise<Recipe> {
@@ -254,7 +228,13 @@ function convertSpoonacularRecipe(spoonacularRecipe: any): Recipe {
     title: spoonacularRecipe.title,
     image: spoonacularRecipe.image || "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400",
     ingredients: spoonacularRecipe.extendedIngredients?.map((ing: any) => ing.original) || [],
-    instructions: instructions.length > 0 ? instructions : ["Follow the recipe instructions carefully for best results."],
+    instructions: instructions.length > 0 ? instructions : [
+      "1. Gather all ingredients and prepare your workspace",
+      "2. Follow the cooking method appropriate for this dish",
+      "3. Season to taste and adjust flavors as needed",
+      "4. Cook until done, checking for proper doneness",
+      "5. Let rest briefly before serving for best results"
+    ],
     prepTime: spoonacularRecipe.preparationMinutes || 15,
     cookTime: spoonacularRecipe.cookingMinutes || 15,
     servings: spoonacularRecipe.servings || 4,
@@ -948,8 +928,8 @@ export async function GET(request: NextRequest) {
     let filteredRecipes: Recipe[] = [];
     let allFetchedRecipes: Recipe[] = [];
     let offset = 0;
-    const batchSize = 10; // Fetch in batches of 10 (reduced to avoid rate limits)
-    const maxBatches = 6; // Fetch 6 batches (60 recipes) for cache
+        const batchSize = 10; // Fetch in batches of 10
+        const maxBatches = 3; // Fetch 3 batches (30 recipes) for cache
 
     try {
       // Fetch a fixed number of recipes for cache, regardless of filtering
@@ -961,6 +941,7 @@ export async function GET(request: NextRequest) {
           number: batchSize.toString(),
           offset: offset.toString(),
           addRecipeInformation: "true",
+          addRecipeInstructions: "true", // This is the key parameter we were missing!
           fillIngredients: "true",
           sort: "popularity",
           sortDirection: "desc",
@@ -1016,28 +997,44 @@ export async function GET(request: NextRequest) {
 
         const data = await response.json();
         console.log(`Spoonacular API batch ${batch + 1} returned ${data.results?.length || 0} recipes`);
+        
+        // Log sample recipe data to see what we're getting
+        if (data.results && data.results.length > 0) {
+          const sampleRecipe = data.results[0];
+          console.log(`Sample recipe data:`, {
+            id: sampleRecipe.id,
+            title: sampleRecipe.title,
+            hasAnalyzedInstructions: !!sampleRecipe.analyzedInstructions,
+            hasInstructions: !!sampleRecipe.instructions,
+            hasExtendedIngredients: !!sampleRecipe.extendedIngredients,
+            hasIngredients: !!sampleRecipe.ingredients
+          });
+        }
 
         // Convert Spoonacular recipes to our format
         if (data.results && data.results.length > 0) {
-          const batchRecipes = data.results.map((recipe: any) => {
+          const batchRecipes = await Promise.all(data.results.map(async (recipe: any, index: number) => {
             try {
-              return convertSpoonacularRecipe(recipe);
+            // Use the recipe data as-is from search results
+            return convertSpoonacularRecipe(recipe);
             } catch (conversionError) {
               console.error(`Error converting recipe ${recipe.id}:`, conversionError);
               return null;
             }
-          }).filter((recipe: Recipe | null) => recipe !== null) as Recipe[];
+          }));
           
-          console.log(`Successfully converted ${batchRecipes.length} recipes from batch ${batch + 1}`);
+          const validBatchRecipes = batchRecipes.filter((recipe: Recipe | null) => recipe !== null) as Recipe[];
+          
+          console.log(`Successfully converted ${validBatchRecipes.length} recipes from batch ${batch + 1}`);
           
           // Add to all fetched recipes
-          allFetchedRecipes.push(...batchRecipes);
+          allFetchedRecipes.push(...validBatchRecipes);
           
           // Apply filtering to this batch
-          // For cache requests (targetCount >= 30), return all recipes without filtering
-          const filteredBatch = targetCount >= 30 
-            ? batchRecipes // Return all recipes for cache - no filtering
-            : applyFiltersToBatch(batchRecipes, {
+            // For cache requests (targetCount >= 30), return all recipes without filtering
+            const filteredBatch = targetCount >= 30
+              ? validBatchRecipes // Return all recipes for cache - no filtering
+              : applyFiltersToBatch(validBatchRecipes, {
                 dish: dish || undefined,
                 cuisine: cuisine || undefined,
                 availableIngredients,
@@ -1107,9 +1104,9 @@ export async function GET(request: NextRequest) {
       }
     }
 
-    // For cache requests, return all available recipes (up to 30); for display requests, return filtered recipes
-    const availableRecipes = allFetchedRecipes.length > 0 ? allFetchedRecipes : filteredRecipes;
-    const finalRecipes = targetCount >= 30 ? availableRecipes.slice(0, 30) : filteredRecipes.slice(0, targetCount);
+        // For cache requests, return all available recipes (up to 30); for display requests, return filtered recipes
+        const availableRecipes = allFetchedRecipes.length > 0 ? allFetchedRecipes : filteredRecipes;
+        const finalRecipes = targetCount >= 30 ? availableRecipes.slice(0, 30) : filteredRecipes.slice(0, targetCount);
     
     console.log(`Final result: ${allFetchedRecipes.length} total fetched recipes, ${filteredRecipes.length} filtered recipes, returning ${finalRecipes.length} (target: ${targetCount})`);
     
