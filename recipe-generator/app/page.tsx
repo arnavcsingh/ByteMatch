@@ -1,13 +1,15 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Upload, Search, Filter, Heart, History, ChefHat, Loader2, User } from "lucide-react";
+import { Upload, Search, Filter, Heart, History, ChefHat, Loader2, User, Sparkles, Zap } from "lucide-react";
 import ImageUpload from "./components/image-upload/ImageUpload";
 import RecipeCard from "./components/recipe-card/RecipeCard";
 import RecipeModal from "./components/recipe-modal/RecipeModal";
 import AuthModal from "./components/auth/AuthModal";
 import UserProfile from "./components/auth/UserProfile";
 import IngredientFilter from "./components/ingredient-filter/IngredientFilter";
+import BackgroundImages from "./components/background/BackgroundImages";
+import FoodVisuals from "./components/visuals/FoodVisuals";
 import { UploadedImage, ClassificationResult, Recipe, FilterOptions } from "@/types";
 import { StorageManager } from "@/helpers/storage";
 
@@ -380,18 +382,34 @@ export default function HomePage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-orange-50 via-red-50 to-pink-50">
+    <div className="min-h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-red-100 relative overflow-hidden">
+      {/* Dynamic background images from Pexels */}
+      <BackgroundImages 
+        query="delicious food cooking"
+        count={12}
+        opacity={0.15}
+        className="pointer-events-none"
+      />
+      
+      {/* Floating food visuals */}
+      <FoodVisuals 
+        type="floating"
+        query="gourmet food"
+        count={8}
+        className="pointer-events-none"
+      />
       {/* Header */}
-      <header className="bg-white/80 backdrop-blur-md shadow-lg border-b border-white/20 sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center">
+      <header className="bg-white/90 backdrop-blur-xl shadow-2xl border-b border-white/30 sticky top-0 z-50">
+        <div className="absolute inset-0 bg-gradient-to-r from-orange-500/5 to-red-500/5"></div>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+          <div className="flex justify-between items-center h-20">
+            <div className="flex items-center group">
               <div className="relative">
-                <ChefHat className="w-8 h-8 text-orange-500 mr-3 drop-shadow-sm" />
-                <div className="absolute -top-1 -right-1 w-3 h-3 bg-gradient-to-r from-orange-400 to-red-400 rounded-full animate-pulse"></div>
+                <ChefHat className="w-10 h-10 text-orange-500 mr-4 group-hover:scale-110 transition-transform duration-300 drop-shadow-lg" />
+                <Sparkles className="w-4 h-4 text-yellow-400 absolute -top-1 -right-1 animate-pulse" />
               </div>
-              <h1 className="text-xl font-bold bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text text-transparent">
-                Recipe Generator
+              <h1 className="text-3xl font-bold bg-gradient-to-r from-orange-600 via-red-500 to-pink-600 bg-clip-text text-transparent font-serif">
+                ByteMatch
               </h1>
             </div>
 
@@ -413,38 +431,38 @@ export default function HomePage() {
             </div>
             
             {/* Navigation Tabs */}
-            <div className="flex space-x-1 bg-white/50 backdrop-blur-sm rounded-xl p-1 shadow-lg">
+            <div className="flex space-x-2 bg-white/60 backdrop-blur-xl rounded-2xl p-2 shadow-2xl border border-white/30">
               <button
                 onClick={() => setActiveTab("upload")}
-                className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
+                className={`px-6 py-3 rounded-xl text-sm font-semibold transition-all duration-300 flex items-center ${
                   activeTab === "upload"
-                    ? "bg-gradient-to-r from-orange-500 to-red-500 text-white shadow-lg transform scale-105"
-                    : "text-gray-600 hover:text-gray-900 hover:bg-white/50"
+                    ? "bg-gradient-to-r from-orange-500 to-red-500 text-white shadow-xl transform scale-105 hover:scale-110"
+                    : "text-gray-700 hover:text-orange-600 hover:bg-white/70 hover:scale-105"
                 }`}
               >
-                <Upload className="w-4 h-4 mr-2 inline" />
+                <Upload className="w-4 h-4 mr-2" />
                 Upload
               </button>
               <button
                 onClick={() => setActiveTab("favorites")}
-                className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
+                className={`px-6 py-3 rounded-xl text-sm font-semibold transition-all duration-300 flex items-center ${
                   activeTab === "favorites"
-                    ? "bg-gradient-to-r from-orange-500 to-red-500 text-white shadow-lg transform scale-105"
-                    : "text-gray-600 hover:text-gray-900 hover:bg-white/50"
+                    ? "bg-gradient-to-r from-orange-500 to-red-500 text-white shadow-xl transform scale-105 hover:scale-110"
+                    : "text-gray-700 hover:text-orange-600 hover:bg-white/70 hover:scale-105"
                 }`}
               >
-                <Heart className="w-4 h-4 mr-2 inline" />
+                <Heart className="w-4 h-4 mr-2" />
                 Favorites ({favorites.length})
               </button>
               <button
                 onClick={() => setActiveTab("history")}
-                className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
+                className={`px-6 py-3 rounded-xl text-sm font-semibold transition-all duration-300 flex items-center ${
                   activeTab === "history"
-                    ? "bg-gradient-to-r from-orange-500 to-red-500 text-white shadow-lg transform scale-105"
-                    : "text-gray-600 hover:text-gray-900 hover:bg-white/50"
+                    ? "bg-gradient-to-r from-orange-500 to-red-500 text-white shadow-xl transform scale-105 hover:scale-110"
+                    : "text-gray-700 hover:text-orange-600 hover:bg-white/70 hover:scale-105"
                 }`}
               >
-                <History className="w-4 h-4 mr-2 inline" />
+                <History className="w-4 h-4 mr-2" />
                 History ({history.length})
               </button>
             </div>
@@ -456,15 +474,33 @@ export default function HomePage() {
         {activeTab === "upload" && (
           <div className="space-y-8">
             {/* Upload Section */}
-            <div className="text-center">
-              <div className="mb-8">
-                <h2 className="text-4xl font-bold bg-gradient-to-r from-orange-600 via-red-500 to-pink-500 bg-clip-text text-transparent mb-4">
-                  Upload a Food Image
+            <div className="text-center relative">
+              <div className="mb-12">
+                <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r from-orange-400 to-red-400 rounded-full mb-6 shadow-2xl">
+                  <Zap className="w-10 h-10 text-white" />
+                </div>
+                <h2 className="text-5xl font-bold bg-gradient-to-r from-orange-600 via-red-500 to-pink-500 bg-clip-text text-transparent mb-6 font-serif">
+                  🍳 Discover Your Perfect Recipe
                 </h2>
-                <p className="text-xl text-gray-600 mb-2">
-                  Get personalized recipes based on your dish
+                <p className="text-xl text-gray-700 mb-6 max-w-2xl mx-auto leading-relaxed">
+                  Upload a photo of your food and get personalized recipe recommendations powered by AI
                 </p>
-                <div className="w-24 h-1 bg-gradient-to-r from-orange-400 to-red-400 rounded-full mx-auto"></div>
+                <div className="flex items-center justify-center space-x-4 text-sm text-gray-500">
+                  <div className="flex items-center">
+                    <div className="w-2 h-2 bg-green-400 rounded-full mr-2 animate-pulse"></div>
+                    <span>AI-Powered</span>
+                  </div>
+                  <div className="w-1 h-1 bg-gray-300 rounded-full"></div>
+                  <div className="flex items-center">
+                    <div className="w-2 h-2 bg-blue-400 rounded-full mr-2 animate-pulse"></div>
+                    <span>Instant Results</span>
+                  </div>
+                  <div className="w-1 h-1 bg-gray-300 rounded-full"></div>
+                  <div className="flex items-center">
+                    <div className="w-2 h-2 bg-purple-400 rounded-full mr-2 animate-pulse"></div>
+                    <span>Personalized</span>
+                  </div>
+                </div>
               </div>
               
               <ImageUpload
@@ -475,90 +511,107 @@ export default function HomePage() {
               />
               
               {uploadedImage && !classification && (
-                <button
-                  onClick={classifyImage}
-                  disabled={isClassifying}
-                  className="mt-8 bg-gradient-to-r from-orange-500 to-red-500 text-white px-10 py-4 rounded-xl font-semibold hover:from-orange-600 hover:to-red-600 disabled:opacity-50 disabled:cursor-not-allowed flex items-center mx-auto shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
-                >
-                  {isClassifying ? (
-                    <>
-                      <Loader2 className="w-5 h-5 mr-2 animate-spin" />
-                      Analyzing Image...
-                    </>
-                  ) : (
-                    <>
-                      <Search className="w-5 h-5 mr-2" />
-                      Find Recipes
-                    </>
-                  )}
-                </button>
+                <div className="mt-12">
+                  <button
+                    onClick={classifyImage}
+                    disabled={isClassifying}
+                    className="group relative bg-gradient-to-r from-orange-500 via-red-500 to-pink-500 text-white px-12 py-5 rounded-2xl font-bold text-lg hover:from-orange-600 hover:via-red-600 hover:to-pink-600 disabled:opacity-50 disabled:cursor-not-allowed flex items-center mx-auto shadow-2xl hover:shadow-3xl transform hover:scale-110 transition-all duration-300 overflow-hidden"
+                  >
+                    <div className="absolute inset-0 bg-gradient-to-r from-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                    {isClassifying ? (
+                      <>
+                        <Loader2 className="w-6 h-6 mr-3 animate-spin relative z-10" />
+                        <span className="relative z-10">Analyzing Image...</span>
+                      </>
+                    ) : (
+                      <>
+                        <Search className="w-6 h-6 mr-3 relative z-10" />
+                        <span className="relative z-10">Find Recipes</span>
+                        <Sparkles className="w-4 h-4 ml-2 relative z-10 animate-pulse" />
+                      </>
+                    )}
+                  </button>
+                </div>
               )}
             </div>
 
             {/* Classification Results */}
             {classification && (
-              <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl p-8 border border-white/20">
-                <h3 className="text-2xl font-bold bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text text-transparent mb-6 text-center">
-                  🎯 Image Analysis Results
-                </h3>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                  <div className="text-center bg-gradient-to-br from-orange-50 to-red-50 rounded-xl p-6 border border-orange-100">
-                    <div className="w-12 h-12 bg-gradient-to-r from-orange-400 to-red-400 rounded-full flex items-center justify-center mx-auto mb-3">
-                      <span className="text-white font-bold text-lg">🍽️</span>
+              <div className="bg-white/90 backdrop-blur-xl rounded-3xl shadow-2xl p-10 border border-white/30 relative overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-br from-orange-500/5 to-red-500/5"></div>
+                <div className="relative">
+                  <div className="text-center mb-8">
+                    <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-green-400 to-emerald-500 rounded-full mb-4 shadow-xl">
+                      <Sparkles className="w-8 h-8 text-white" />
                     </div>
-                    <p className="text-sm text-gray-600 mb-1">Dish Type</p>
-                    <p className="text-xl font-bold text-gray-900">
-                      {classification.dish}
-                    </p>
+                    <h3 className="text-3xl font-bold bg-gradient-to-r from-orange-600 via-red-500 to-pink-500 bg-clip-text text-transparent mb-2 font-serif">
+                      🎯 Image Analysis Complete
+                    </h3>
+                    <p className="text-gray-600">Here's what we detected in your image</p>
                   </div>
-                  <div className="text-center bg-gradient-to-br from-orange-50 to-red-50 rounded-xl p-6 border border-orange-100">
-                    <div className="w-12 h-12 bg-gradient-to-r from-orange-400 to-red-400 rounded-full flex items-center justify-center mx-auto mb-3">
-                      <span className="text-white font-bold text-lg">🌍</span>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div className="group text-center bg-white/70 backdrop-blur-sm rounded-2xl p-8 border border-orange-200/50 hover:bg-white/90 hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl">
+                      <div className="w-16 h-16 bg-gradient-to-r from-orange-400 to-red-400 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg group-hover:scale-110 transition-transform duration-300">
+                        <span className="text-white font-bold text-2xl">🍽️</span>
+                      </div>
+                      <p className="text-sm text-gray-600 mb-2 font-medium">Dish Type</p>
+                      <p className="text-2xl font-bold text-gray-900">
+                        {classification.dish}
+                      </p>
                     </div>
-                    <p className="text-sm text-gray-600 mb-1">Cuisine</p>
-                    <p className="text-xl font-bold text-gray-900">
-                      {classification.cuisine}
-                    </p>
-                  </div>
-                  <div className="text-center bg-gradient-to-br from-orange-50 to-red-50 rounded-xl p-6 border border-orange-100">
-                    <div className="w-12 h-12 bg-gradient-to-r from-orange-400 to-red-400 rounded-full flex items-center justify-center mx-auto mb-3">
-                      <span className="text-white font-bold text-lg">📊</span>
+                    <div className="group text-center bg-white/70 backdrop-blur-sm rounded-2xl p-8 border border-orange-200/50 hover:bg-white/90 hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl">
+                      <div className="w-16 h-16 bg-gradient-to-r from-blue-400 to-indigo-400 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg group-hover:scale-110 transition-transform duration-300">
+                        <span className="text-white font-bold text-2xl">🌍</span>
+                      </div>
+                      <p className="text-sm text-gray-600 mb-2 font-medium">Cuisine</p>
+                      <p className="text-2xl font-bold text-gray-900">
+                        {classification.cuisine}
+                      </p>
                     </div>
-                    <p className="text-sm text-gray-600 mb-1">Confidence</p>
-                    <p className="text-xl font-bold text-gray-900">
-                      {Math.round(classification.confidence * 100)}%
-                    </p>
+                    <div className="group text-center bg-white/70 backdrop-blur-sm rounded-2xl p-8 border border-orange-200/50 hover:bg-white/90 hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl">
+                      <div className="w-16 h-16 bg-gradient-to-r from-green-400 to-emerald-400 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg group-hover:scale-110 transition-transform duration-300">
+                        <span className="text-white font-bold text-2xl">📊</span>
+                      </div>
+                      <p className="text-sm text-gray-600 mb-2 font-medium">Confidence</p>
+                      <p className="text-2xl font-bold text-gray-900">
+                        {Math.round(classification.confidence * 100)}%
+                      </p>
+                    </div>
                   </div>
+                  {classification.tags.length > 0 && (
+                    <div className="mt-10">
+                      <p className="text-xl font-semibold text-gray-800 mb-6 text-center">✨ Detected Elements:</p>
+                      <div className="flex flex-wrap gap-4 justify-center">
+                        {classification.tags.map((tag, index) => (
+                          <span
+                            key={index}
+                            className="group px-6 py-3 bg-gradient-to-r from-orange-100 to-red-100 text-orange-800 text-sm rounded-full border border-orange-200 font-semibold shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300 cursor-default"
+                          >
+                            <span className="group-hover:text-orange-900 transition-colors">{tag}</span>
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                 </div>
-                {classification.tags.length > 0 && (
-                  <div className="mt-8">
-                    <p className="text-lg font-semibold text-gray-700 mb-4 text-center">Detected Elements:</p>
-                    <div className="flex flex-wrap gap-3 justify-center">
-                      {classification.tags.map((tag, index) => (
-                        <span
-                          key={index}
-                          className="px-4 py-2 bg-gradient-to-r from-orange-100 to-red-100 text-orange-700 text-sm rounded-full border border-orange-200 font-medium shadow-sm hover:shadow-md transition-shadow"
-                        >
-                          {tag}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                )}
               </div>
             )}
 
             {/* Filters */}
-            <div className="flex justify-between items-center">
-              <h3 className="text-2xl font-bold bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text text-transparent">
-                🔍 Recipe Filters
-              </h3>
+            <div className="flex justify-between items-center bg-white/60 backdrop-blur-xl rounded-2xl p-6 shadow-xl border border-white/30">
+              <div>
+                <h3 className="text-3xl font-bold bg-gradient-to-r from-orange-600 via-red-500 to-pink-500 bg-clip-text text-transparent font-serif">
+                  🔍 Recipe Filters
+                </h3>
+                <p className="text-gray-600 mt-1">Customize your recipe search</p>
+              </div>
               <button
                 onClick={() => setShowFilters(!showFilters)}
-                className="flex items-center px-6 py-3 bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-xl text-sm font-semibold hover:from-orange-600 hover:to-red-600 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
+                className="group flex items-center px-8 py-4 bg-gradient-to-r from-orange-500 via-red-500 to-pink-500 text-white rounded-2xl text-sm font-bold hover:from-orange-600 hover:via-red-600 hover:to-pink-600 shadow-2xl hover:shadow-3xl transform hover:scale-110 transition-all duration-300"
               >
-                <Filter className="w-4 h-4 mr-2" />
+                <Filter className="w-5 h-5 mr-3 group-hover:rotate-12 transition-transform duration-300" />
                 {showFilters ? "Hide" : "Show"} Filters
+                <Sparkles className="w-4 h-4 ml-2 group-hover:animate-pulse" />
               </button>
             </div>
 
@@ -569,32 +622,74 @@ export default function HomePage() {
               />
             )}
 
+            {/* Food Inspiration Carousel */}
+            {!uploadedImage && !classification && (
+              <div className="relative mb-16">
+                <div className="text-center mb-8">
+                  <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-pink-400 to-purple-400 rounded-full mb-4 shadow-2xl">
+                    <Sparkles className="w-8 h-8 text-white" />
+                  </div>
+                  <h3 className="text-3xl font-bold bg-gradient-to-r from-pink-600 via-purple-500 to-indigo-500 bg-clip-text text-transparent mb-2 font-serif">
+                    🎨 Food Inspiration
+                  </h3>
+                  <p className="text-gray-600">Discover beautiful dishes from around the world</p>
+                </div>
+                <div className="bg-white/60 backdrop-blur-xl rounded-3xl p-6 shadow-2xl border border-white/30">
+                  <FoodVisuals 
+                    type="carousel"
+                    query="gourmet food fine dining"
+                    count={10}
+                    className="h-40"
+                  />
+                </div>
+              </div>
+            )}
+
             {/* Recipes Grid */}
             {getUploadTabRecipes().length > 0 && (
-              <div>
-                <h3 className="text-3xl font-bold bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text text-transparent mb-8 text-center">
-                  {!uploadedImage && !classification 
-                    ? (getFavoriteRecipes().length > 0 ? "❤️ Your Favorite Recipes" : "📚 Your Recent Recipes")
-                    : "🍳 Recommended Recipes"
-                  }
-                </h3>
+              <div className="relative">
+                <div className="text-center mb-12">
+                  <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r from-orange-400 to-red-400 rounded-full mb-6 shadow-2xl">
+                    <ChefHat className="w-10 h-10 text-white" />
+                  </div>
+                  <h3 className="text-4xl font-bold bg-gradient-to-r from-orange-600 via-red-500 to-pink-500 bg-clip-text text-transparent mb-4 font-serif">
+                    {!uploadedImage && !classification 
+                      ? (getFavoriteRecipes().length > 0 ? "❤️ Your Favorite Recipes" : "📚 Your Recent Recipes")
+                      : "🍳 Recommended Recipes"
+                    }
+                  </h3>
+                  <p className="text-gray-600 text-lg">
+                    {!uploadedImage && !classification 
+                      ? "Your personalized collection"
+                      : "Handpicked just for you"
+                    }
+                  </p>
+                </div>
                 {isLoadingRecipes ? (
-                  <div className="flex justify-center items-center py-16">
-                    <div className="text-center">
-                      <Loader2 className="w-12 h-12 animate-spin text-orange-500 mx-auto mb-4" />
-                      <span className="text-xl text-gray-600 font-medium">Loading delicious recipes...</span>
+                  <div className="flex justify-center items-center py-20">
+                    <div className="text-center bg-white/80 backdrop-blur-xl rounded-3xl p-12 shadow-2xl border border-white/30">
+                      <div className="w-20 h-20 bg-gradient-to-r from-orange-400 to-red-400 rounded-full flex items-center justify-center mx-auto mb-6 shadow-xl">
+                        <Loader2 className="w-10 h-10 animate-spin text-white" />
+                      </div>
+                      <span className="text-2xl text-gray-700 font-semibold">Loading delicious recipes...</span>
+                      <p className="text-gray-500 mt-2">This might take a moment</p>
                     </div>
                   </div>
                 ) : (
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    {getUploadTabRecipes().map((recipe) => (
-                      <RecipeCard
+                    {getUploadTabRecipes().map((recipe, index) => (
+                      <div 
                         key={recipe.id}
-                        recipe={recipe}
-                        onToggleFavorite={handleToggleFavorite}
-                        isFavorite={favorites.includes(recipe.id)}
-                        onViewDetails={handleViewRecipe}
-                      />
+                        className="transform transition-all duration-500 hover:scale-105"
+                        style={{ animationDelay: `${index * 100}ms` }}
+                      >
+                        <RecipeCard
+                          recipe={recipe}
+                          onToggleFavorite={handleToggleFavorite}
+                          isFavorite={favorites.includes(recipe.id)}
+                          onViewDetails={handleViewRecipe}
+                        />
+                      </div>
                     ))}
                   </div>
                 )}
@@ -604,30 +699,49 @@ export default function HomePage() {
         )}
 
         {activeTab === "favorites" && (
-          <div>
-            <h2 className="text-3xl font-bold bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text text-transparent mb-8 text-center">
-              ❤️ Your Favorite Recipes
-            </h2>
+          <div className="relative">
+            <div className="text-center mb-12">
+              <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r from-pink-400 to-red-400 rounded-full mb-6 shadow-2xl">
+                <Heart className="w-10 h-10 text-white" />
+              </div>
+              <h2 className="text-4xl font-bold bg-gradient-to-r from-pink-600 via-red-500 to-orange-500 bg-clip-text text-transparent mb-4 font-serif">
+                ❤️ Your Favorite Recipes
+              </h2>
+              <p className="text-gray-600 text-lg">Recipes you love and want to cook again</p>
+            </div>
             {favorites.length === 0 ? (
-              <div className="text-center py-16">
-                <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl p-12 border border-white/20 max-w-md mx-auto">
-                  <Heart className="w-20 h-20 text-orange-300 mx-auto mb-6" />
-                  <p className="text-xl text-gray-700 font-semibold mb-2">No favorite recipes yet</p>
-                  <p className="text-gray-500">
-                    Upload an image and add recipes to your favorites
+              <div className="text-center py-20">
+                <div className="bg-white/90 backdrop-blur-xl rounded-3xl shadow-2xl p-16 border border-white/30 max-w-lg mx-auto">
+                  <div className="w-24 h-24 bg-gradient-to-r from-pink-200 to-red-200 rounded-full flex items-center justify-center mx-auto mb-8 shadow-xl">
+                    <Heart className="w-12 h-12 text-pink-400" />
+                  </div>
+                  <h3 className="text-2xl text-gray-800 font-bold mb-4">No favorite recipes yet</h3>
+                  <p className="text-gray-600 mb-6">
+                    Upload an image and add recipes to your favorites to see them here
                   </p>
+                  <button
+                    onClick={() => setActiveTab("upload")}
+                    className="bg-gradient-to-r from-pink-500 to-red-500 text-white px-8 py-3 rounded-xl font-semibold hover:from-pink-600 hover:to-red-600 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
+                  >
+                    Start Exploring
+                  </button>
                 </div>
               </div>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                {getFavoriteRecipes().map((recipe) => (
-                  <RecipeCard
+                {getFavoriteRecipes().map((recipe, index) => (
+                  <div 
                     key={recipe.id}
-                    recipe={recipe}
-                    onToggleFavorite={handleToggleFavorite}
-                    isFavorite={true}
-                    onViewDetails={handleViewRecipe}
-                  />
+                    className="transform transition-all duration-500 hover:scale-105"
+                    style={{ animationDelay: `${index * 100}ms` }}
+                  >
+                    <RecipeCard
+                      recipe={recipe}
+                      onToggleFavorite={handleToggleFavorite}
+                      isFavorite={true}
+                      onViewDetails={handleViewRecipe}
+                    />
+                  </div>
                 ))}
               </div>
             )}
@@ -635,30 +749,49 @@ export default function HomePage() {
         )}
 
         {activeTab === "history" && (
-          <div>
-            <h2 className="text-3xl font-bold bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text text-transparent mb-8 text-center">
-              📚 Recently Viewed Recipes
-            </h2>
+          <div className="relative">
+            <div className="text-center mb-12">
+              <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r from-blue-400 to-indigo-400 rounded-full mb-6 shadow-2xl">
+                <History className="w-10 h-10 text-white" />
+              </div>
+              <h2 className="text-4xl font-bold bg-gradient-to-r from-blue-600 via-indigo-500 to-purple-500 bg-clip-text text-transparent mb-4 font-serif">
+                📚 Recently Viewed Recipes
+              </h2>
+              <p className="text-gray-600 text-lg">Your cooking journey and discoveries</p>
+            </div>
             {history.length === 0 ? (
-              <div className="text-center py-16">
-                <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl p-12 border border-white/20 max-w-md mx-auto">
-                  <History className="w-20 h-20 text-orange-300 mx-auto mb-6" />
-                  <p className="text-xl text-gray-700 font-semibold mb-2">No recent activity</p>
-                  <p className="text-gray-500">
-                    Start exploring recipes to build your history
+              <div className="text-center py-20">
+                <div className="bg-white/90 backdrop-blur-xl rounded-3xl shadow-2xl p-16 border border-white/30 max-w-lg mx-auto">
+                  <div className="w-24 h-24 bg-gradient-to-r from-blue-200 to-indigo-200 rounded-full flex items-center justify-center mx-auto mb-8 shadow-xl">
+                    <History className="w-12 h-12 text-blue-400" />
+                  </div>
+                  <h3 className="text-2xl text-gray-800 font-bold mb-4">No recent activity</h3>
+                  <p className="text-gray-600 mb-6">
+                    Start exploring recipes to build your cooking history
                   </p>
+                  <button
+                    onClick={() => setActiveTab("upload")}
+                    className="bg-gradient-to-r from-blue-500 to-indigo-500 text-white px-8 py-3 rounded-xl font-semibold hover:from-blue-600 hover:to-indigo-600 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
+                  >
+                    Start Exploring
+                  </button>
                 </div>
               </div>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                {getHistoryRecipes().map((recipe) => (
-                  <RecipeCard
+                {getHistoryRecipes().map((recipe, index) => (
+                  <div 
                     key={recipe.id}
-                    recipe={recipe}
-                    onToggleFavorite={handleToggleFavorite}
-                    isFavorite={favorites.includes(recipe.id)}
-                    onViewDetails={handleViewRecipe}
-                  />
+                    className="transform transition-all duration-500 hover:scale-105"
+                    style={{ animationDelay: `${index * 100}ms` }}
+                  >
+                    <RecipeCard
+                      recipe={recipe}
+                      onToggleFavorite={handleToggleFavorite}
+                      isFavorite={favorites.includes(recipe.id)}
+                      onViewDetails={handleViewRecipe}
+                    />
+                  </div>
                 ))}
               </div>
             )}
