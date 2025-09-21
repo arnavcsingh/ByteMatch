@@ -1,0 +1,760 @@
+{
+  "ingredients": {
+    "beef": {
+      "calories": 250,
+      "protein": 26,
+      "carbs": 0,
+      "fat": 15,
+      "fiber": 0,
+      "sugar": 0,
+      "sodium": 72
+    },
+    "ground beef": {
+      "calories": 250,
+      "protein": 26,
+      "carbs": 0,
+      "fat": 15,
+      "fiber": 0,
+      "sugar": 0,
+      "sodium": 72
+    },
+    "hamburger": {
+      "calories": 250,
+      "protein": 26,
+      "carbs": 0,
+      "fat": 15,
+      "fiber": 0,
+      "sugar": 0,
+      "sodium": 72
+    },
+    "burger": {
+      "calories": 250,
+      "protein": 26,
+      "carbs": 0,
+      "fat": 15,
+      "fiber": 0,
+      "sugar": 0,
+      "sodium": 72
+    },
+    "chicken": {
+      "calories": 165,
+      "protein": 31,
+      "carbs": 0,
+      "fat": 3.6,
+      "fiber": 0,
+      "sugar": 0,
+      "sodium": 74
+    },
+    "chicken breast": {
+      "calories": 165,
+      "protein": 31,
+      "carbs": 0,
+      "fat": 3.6,
+      "fiber": 0,
+      "sugar": 0,
+      "sodium": 74
+    },
+    "pork": {
+      "calories": 242,
+      "protein": 27,
+      "carbs": 0,
+      "fat": 14,
+      "fiber": 0,
+      "sugar": 0,
+      "sodium": 62
+    },
+    "bacon": {
+      "calories": 541,
+      "protein": 37,
+      "carbs": 1.4,
+      "fat": 42,
+      "fiber": 0,
+      "sugar": 0,
+      "sodium": 1717
+    },
+    "sausage": {
+      "calories": 301,
+      "protein": 13,
+      "carbs": 2,
+      "fat": 27,
+      "fiber": 0,
+      "sugar": 0,
+      "sodium": 1000
+    },
+    "fish": {
+      "calories": 206,
+      "protein": 22,
+      "carbs": 0,
+      "fat": 12,
+      "fiber": 0,
+      "sugar": 0,
+      "sodium": 61
+    },
+    "salmon": {
+      "calories": 208,
+      "protein": 25,
+      "carbs": 0,
+      "fat": 12,
+      "fiber": 0,
+      "sugar": 0,
+      "sodium": 44
+    },
+    "tuna": {
+      "calories": 144,
+      "protein": 30,
+      "carbs": 0,
+      "fat": 1,
+      "fiber": 0,
+      "sugar": 0,
+      "sodium": 396
+    },
+    "bread": {
+      "calories": 265,
+      "protein": 9,
+      "carbs": 49,
+      "fat": 3.2,
+      "fiber": 2.7,
+      "sugar": 5.7,
+      "sodium": 681
+    },
+    "bun": {
+      "calories": 265,
+      "protein": 9,
+      "carbs": 49,
+      "fat": 3.2,
+      "fiber": 2.7,
+      "sugar": 5.7,
+      "sodium": 681
+    },
+    "hamburger bun": {
+      "calories": 265,
+      "protein": 9,
+      "carbs": 49,
+      "fat": 3.2,
+      "fiber": 2.7,
+      "sugar": 5.7,
+      "sodium": 681
+    },
+    "flour": {
+      "calories": 364,
+      "protein": 10,
+      "carbs": 76,
+      "fat": 1,
+      "fiber": 2.7,
+      "sugar": 0.3,
+      "sodium": 2
+    },
+    "rice": {
+      "calories": 130,
+      "protein": 2.7,
+      "carbs": 28,
+      "fat": 0.3,
+      "fiber": 0.4,
+      "sugar": 0.1,
+      "sodium": 1
+    },
+    "pasta": {
+      "calories": 131,
+      "protein": 5,
+      "carbs": 25,
+      "fat": 1.1,
+      "fiber": 1.8,
+      "sugar": 0.6,
+      "sodium": 1
+    },
+    "spaghetti": {
+      "calories": 131,
+      "protein": 5,
+      "carbs": 25,
+      "fat": 1.1,
+      "fiber": 1.8,
+      "sugar": 0.6,
+      "sodium": 1
+    },
+    "cheese": {
+      "calories": 113,
+      "protein": 7,
+      "carbs": 1,
+      "fat": 9,
+      "fiber": 0,
+      "sugar": 0.1,
+      "sodium": 621
+    },
+    "cheddar": {
+      "calories": 113,
+      "protein": 7,
+      "carbs": 1,
+      "fat": 9,
+      "fiber": 0,
+      "sugar": 0.1,
+      "sodium": 621
+    },
+    "mozzarella": {
+      "calories": 280,
+      "protein": 22,
+      "carbs": 2,
+      "fat": 22,
+      "fiber": 0,
+      "sugar": 1,
+      "sodium": 627
+    },
+    "parmesan": {
+      "calories": 431,
+      "protein": 38,
+      "carbs": 4,
+      "fat": 29,
+      "fiber": 0,
+      "sugar": 0.9,
+      "sodium": 1529
+    },
+    "milk": {
+      "calories": 42,
+      "protein": 3.4,
+      "carbs": 5,
+      "fat": 1,
+      "fiber": 0,
+      "sugar": 5,
+      "sodium": 44
+    },
+    "butter": {
+      "calories": 717,
+      "protein": 0.9,
+      "carbs": 0.1,
+      "fat": 81,
+      "fiber": 0,
+      "sugar": 0.1,
+      "sodium": 11
+    },
+    "eggs": {
+      "calories": 155,
+      "protein": 13,
+      "carbs": 1.1,
+      "fat": 11,
+      "fiber": 0,
+      "sugar": 1.1,
+      "sodium": 124
+    },
+    "egg": {
+      "calories": 155,
+      "protein": 13,
+      "carbs": 1.1,
+      "fat": 11,
+      "fiber": 0,
+      "sugar": 1.1,
+      "sodium": 124
+    },
+    "lettuce": {
+      "calories": 15,
+      "protein": 1.4,
+      "carbs": 2.9,
+      "fat": 0.2,
+      "fiber": 1.3,
+      "sugar": 0.8,
+      "sodium": 28
+    },
+    "tomato": {
+      "calories": 18,
+      "protein": 0.9,
+      "carbs": 3.9,
+      "fat": 0.2,
+      "fiber": 1.2,
+      "sugar": 2.6,
+      "sodium": 5
+    },
+    "onion": {
+      "calories": 40,
+      "protein": 1.1,
+      "carbs": 9.3,
+      "fat": 0.1,
+      "fiber": 1.7,
+      "sugar": 4.2,
+      "sodium": 4
+    },
+    "garlic": {
+      "calories": 149,
+      "protein": 6.4,
+      "carbs": 33,
+      "fat": 0.5,
+      "fiber": 2.1,
+      "sugar": 1,
+      "sodium": 17
+    },
+    "potato": {
+      "calories": 77,
+      "protein": 2,
+      "carbs": 17,
+      "fat": 0.1,
+      "fiber": 2.2,
+      "sugar": 0.8,
+      "sodium": 6
+    },
+    "carrot": {
+      "calories": 41,
+      "protein": 0.9,
+      "carbs": 9.6,
+      "fat": 0.2,
+      "fiber": 2.8,
+      "sugar": 4.7,
+      "sodium": 69
+    },
+    "broccoli": {
+      "calories": 34,
+      "protein": 2.8,
+      "carbs": 7,
+      "fat": 0.4,
+      "fiber": 2.6,
+      "sugar": 1.5,
+      "sodium": 33
+    },
+    "spinach": {
+      "calories": 23,
+      "protein": 2.9,
+      "carbs": 3.6,
+      "fat": 0.4,
+      "fiber": 2.2,
+      "sugar": 0.4,
+      "sodium": 79
+    },
+    "mushroom": {
+      "calories": 22,
+      "protein": 3.1,
+      "carbs": 3.3,
+      "fat": 0.3,
+      "fiber": 1,
+      "sugar": 2,
+      "sodium": 5
+    },
+    "bell pepper": {
+      "calories": 31,
+      "protein": 1,
+      "carbs": 7,
+      "fat": 0.3,
+      "fiber": 2.5,
+      "sugar": 4.2,
+      "sodium": 4
+    },
+    "pepper": {
+      "calories": 31,
+      "protein": 1,
+      "carbs": 7,
+      "fat": 0.3,
+      "fiber": 2.5,
+      "sugar": 4.2,
+      "sodium": 4
+    },
+    "cucumber": {
+      "calories": 16,
+      "protein": 0.7,
+      "carbs": 4,
+      "fat": 0.1,
+      "fiber": 0.5,
+      "sugar": 1.7,
+      "sodium": 2
+    },
+    "olive oil": {
+      "calories": 884,
+      "protein": 0,
+      "carbs": 0,
+      "fat": 100,
+      "fiber": 0,
+      "sugar": 0,
+      "sodium": 2
+    },
+    "vegetable oil": {
+      "calories": 884,
+      "protein": 0,
+      "carbs": 0,
+      "fat": 100,
+      "fiber": 0,
+      "sugar": 0,
+      "sodium": 0
+    },
+    "oil": {
+      "calories": 884,
+      "protein": 0,
+      "carbs": 0,
+      "fat": 100,
+      "fiber": 0,
+      "sugar": 0,
+      "sodium": 0
+    },
+    "mayonnaise": {
+      "calories": 680,
+      "protein": 1,
+      "carbs": 0.6,
+      "fat": 75,
+      "fiber": 0,
+      "sugar": 0.3,
+      "sodium": 635
+    },
+    "mayo": {
+      "calories": 680,
+      "protein": 1,
+      "carbs": 0.6,
+      "fat": 75,
+      "fiber": 0,
+      "sugar": 0.3,
+      "sodium": 635
+    },
+    "ketchup": {
+      "calories": 112,
+      "protein": 1.7,
+      "carbs": 27,
+      "fat": 0.1,
+      "fiber": 0.3,
+      "sugar": 22,
+      "sodium": 1110
+    },
+    "mustard": {
+      "calories": 66,
+      "protein": 4,
+      "carbs": 4,
+      "fat": 4,
+      "fiber": 3.3,
+      "sugar": 2.8,
+      "sodium": 1135
+    },
+    "salt": {
+      "calories": 0,
+      "protein": 0,
+      "carbs": 0,
+      "fat": 0,
+      "fiber": 0,
+      "sugar": 0,
+      "sodium": 38758
+    },
+    "sugar": {
+      "calories": 387,
+      "protein": 0,
+      "carbs": 100,
+      "fat": 0,
+      "fiber": 0,
+      "sugar": 100,
+      "sodium": 1
+    },
+    "honey": {
+      "calories": 304,
+      "protein": 0.3,
+      "carbs": 82,
+      "fat": 0,
+      "fiber": 0.2,
+      "sugar": 82,
+      "sodium": 4
+    },
+    "vinegar": {
+      "calories": 19,
+      "protein": 0,
+      "carbs": 0.9,
+      "fat": 0,
+      "fiber": 0,
+      "sugar": 0.4,
+      "sodium": 5
+    },
+    "lemon": {
+      "calories": 29,
+      "protein": 1.1,
+      "carbs": 9,
+      "fat": 0.3,
+      "fiber": 2.8,
+      "sugar": 2.5,
+      "sodium": 2
+    },
+    "lime": {
+      "calories": 30,
+      "protein": 0.7,
+      "carbs": 11,
+      "fat": 0.2,
+      "fiber": 2.8,
+      "sugar": 1.7,
+      "sodium": 2
+    },
+    "basil": {
+      "calories": 22,
+      "protein": 3.2,
+      "carbs": 2.6,
+      "fat": 0.6,
+      "fiber": 1.6,
+      "sugar": 0.3,
+      "sodium": 4
+    },
+    "oregano": {
+      "calories": 265,
+      "protein": 9,
+      "carbs": 69,
+      "fat": 4.3,
+      "fiber": 42.5,
+      "sugar": 4.1,
+      "sodium": 25
+    },
+    "thyme": {
+      "calories": 276,
+      "protein": 9.1,
+      "carbs": 63.9,
+      "fat": 7.4,
+      "fiber": 37,
+      "sugar": 1.7,
+      "sodium": 55
+    },
+    "parsley": {
+      "calories": 36,
+      "protein": 3,
+      "carbs": 6,
+      "fat": 0.8,
+      "fiber": 3.3,
+      "sugar": 0.9,
+      "sodium": 56
+    },
+    "cilantro": {
+      "calories": 23,
+      "protein": 2.1,
+      "carbs": 3.7,
+      "fat": 0.5,
+      "fiber": 2.8,
+      "sugar": 0.9,
+      "sodium": 46
+    },
+    "ginger": {
+      "calories": 80,
+      "protein": 1.8,
+      "carbs": 18,
+      "fat": 0.8,
+      "fiber": 2,
+      "sugar": 1.7,
+      "sodium": 13
+    },
+    "pickle": {
+      "calories": 12,
+      "protein": 0.5,
+      "carbs": 2.4,
+      "fat": 0.1,
+      "fiber": 1.2,
+      "sugar": 1.1,
+      "sodium": 1208
+    },
+    "avocado": {
+      "calories": 160,
+      "protein": 2,
+      "carbs": 9,
+      "fat": 15,
+      "fiber": 7,
+      "sugar": 0.7,
+      "sodium": 7
+    },
+    "banana": {
+      "calories": 89,
+      "protein": 1.1,
+      "carbs": 23,
+      "fat": 0.3,
+      "fiber": 2.6,
+      "sugar": 12,
+      "sodium": 1
+    },
+    "apple": {
+      "calories": 52,
+      "protein": 0.3,
+      "carbs": 14,
+      "fat": 0.2,
+      "fiber": 2.4,
+      "sugar": 10,
+      "sodium": 1
+    },
+    "orange": {
+      "calories": 47,
+      "protein": 0.9,
+      "carbs": 12,
+      "fat": 0.1,
+      "fiber": 2.4,
+      "sugar": 9,
+      "sodium": 0
+    },
+    "lemon juice": {
+      "calories": 22,
+      "protein": 0.4,
+      "carbs": 7,
+      "fat": 0.2,
+      "fiber": 0.3,
+      "sugar": 2.5,
+      "sodium": 1
+    },
+    "lime juice": {
+      "calories": 25,
+      "protein": 0.4,
+      "carbs": 8,
+      "fat": 0.1,
+      "fiber": 0.3,
+      "sugar": 1.7,
+      "sodium": 1
+    },
+    "soy sauce": {
+      "calories": 8,
+      "protein": 1.3,
+      "carbs": 0.8,
+      "fat": 0,
+      "fiber": 0.1,
+      "sugar": 0.4,
+      "sodium": 5493
+    },
+    "worcestershire sauce": {
+      "calories": 78,
+      "protein": 0,
+      "carbs": 19,
+      "fat": 0,
+      "fiber": 0,
+      "sugar": 19,
+      "sodium": 1040
+    },
+    "hot sauce": {
+      "calories": 6,
+      "protein": 0.3,
+      "carbs": 1.3,
+      "fat": 0.1,
+      "fiber": 0.2,
+      "sugar": 0.8,
+      "sodium": 1124
+    },
+    "sriracha": {
+      "calories": 15,
+      "protein": 0.8,
+      "carbs": 3,
+      "fat": 0.1,
+      "fiber": 0.3,
+      "sugar": 2.1,
+      "sodium": 240
+    },
+    "paprika": {
+      "calories": 282,
+      "protein": 14,
+      "carbs": 54,
+      "fat": 13,
+      "fiber": 35,
+      "sugar": 10,
+      "sodium": 68
+    },
+    "cumin": {
+      "calories": 375,
+      "protein": 18,
+      "carbs": 44,
+      "fat": 22,
+      "fiber": 11,
+      "sugar": 2.3,
+      "sodium": 168
+    },
+    "cinnamon": {
+      "calories": 247,
+      "protein": 4,
+      "carbs": 81,
+      "fat": 1.2,
+      "fiber": 54,
+      "sugar": 2.2,
+      "sodium": 10
+    },
+    "nutmeg": {
+      "calories": 525,
+      "protein": 6,
+      "carbs": 49,
+      "fat": 36,
+      "fiber": 21,
+      "sugar": 28,
+      "sodium": 16
+    },
+    "vanilla": {
+      "calories": 288,
+      "protein": 0.1,
+      "carbs": 13,
+      "fat": 0.1,
+      "fiber": 0,
+      "sugar": 13,
+      "sodium": 9
+    },
+    "chocolate": {
+      "calories": 546,
+      "protein": 7.8,
+      "carbs": 46,
+      "fat": 31,
+      "fiber": 11,
+      "sugar": 24,
+      "sodium": 79
+    },
+    "cocoa": {
+      "calories": 228,
+      "protein": 20,
+      "carbs": 58,
+      "fat": 14,
+      "fiber": 33,
+      "sugar": 2,
+      "sodium": 21
+    },
+    "nuts": {
+      "calories": 607,
+      "protein": 20,
+      "carbs": 21,
+      "fat": 54,
+      "fiber": 7,
+      "sugar": 4.2,
+      "sodium": 1
+    },
+    "almonds": {
+      "calories": 579,
+      "protein": 21,
+      "carbs": 22,
+      "fat": 50,
+      "fiber": 12,
+      "sugar": 4.4,
+      "sodium": 1
+    },
+    "walnuts": {
+      "calories": 654,
+      "protein": 15,
+      "carbs": 14,
+      "fat": 65,
+      "fiber": 6.7,
+      "sugar": 2.6,
+      "sodium": 2
+    },
+    "peanuts": {
+      "calories": 567,
+      "protein": 26,
+      "carbs": 16,
+      "fat": 49,
+      "fiber": 8.5,
+      "sugar": 4.7,
+      "sodium": 18
+    },
+    "yogurt": {
+      "calories": 59,
+      "protein": 10,
+      "carbs": 3.6,
+      "fat": 0.4,
+      "fiber": 0,
+      "sugar": 3.6,
+      "sodium": 36
+    },
+    "cream": {
+      "calories": 345,
+      "protein": 2.8,
+      "carbs": 2.8,
+      "fat": 37,
+      "fiber": 0,
+      "sugar": 2.8,
+      "sodium": 30
+    },
+    "sour cream": {
+      "calories": 198,
+      "protein": 2.3,
+      "carbs": 4.6,
+      "fat": 20,
+      "fiber": 0,
+      "sugar": 3.1,
+      "sodium": 30
+    },
+    "cream cheese": {
+      "calories": 342,
+      "protein": 6,
+      "carbs": 4,
+      "fat": 34,
+      "fiber": 0,
+      "sugar": 3.2,
+      "sodium": 321
+    }
+  }
+}

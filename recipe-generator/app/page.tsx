@@ -21,7 +21,9 @@ export default function HomePage() {
   const [recipeCache, setRecipeCache] = useState<Recipe[]>([]); // Cache for all fetched recipes
   const [filters, setFilters] = useState<FilterOptions>({ availableIngredients: [] });
   const [favorites, setFavorites] = useState<string[]>([]);
+  const [favoriteRecipes, setFavoriteRecipes] = useState<Recipe[]>([]);
   const [history, setHistory] = useState<string[]>([]);
+  const [historyRecipes, setHistoryRecipes] = useState<Recipe[]>([]);
   const [isClassifying, setIsClassifying] = useState(false);
   const [isLoadingRecipes, setIsLoadingRecipes] = useState(false);
   const [activeTab, setActiveTab] = useState<"upload" | "favorites" | "history">("upload");
@@ -44,8 +46,18 @@ export default function HomePage() {
   // Load localStorage data for non-authenticated users
   useEffect(() => {
     if (!user && !isLoadingUser) {
-      setFavorites(StorageManager.getFavorites());
-      setHistory(StorageManager.getHistory());
+      // For non-authenticated users, start fresh each session (reset on page refresh)
+      // Only clear on initial load, not on every user state change
+      const hasInitialized = sessionStorage.getItem('session-initialized');
+      if (!hasInitialized) {
+        StorageManager.clearAll();
+        setFavorites([]);
+        setHistory([]);
+        setFavoriteRecipes([]);
+        setHistoryRecipes([]);
+        sessionStorage.setItem('session-initialized', 'true');
+        console.log('Session initialized - cleared all data for non-authenticated user');
+      }
     }
   }, [user, isLoadingUser]);
 
@@ -86,15 +98,10 @@ export default function HomePage() {
         const favoritesData = await favoritesResponse.json();
         const favoriteIds = favoritesData.recipes.map((r: Recipe) => r.id);
         setFavorites(favoriteIds);
-        
-        // Store favorite recipes separately for display
-        if (favoritesData.recipes.length > 0) {
-          setRecipes(prev => {
-            const existingIds = prev.map(r => r.id);
-            const newRecipes = favoritesData.recipes.filter((r: Recipe) => !existingIds.includes(r.id));
-            return [...prev, ...newRecipes];
-          });
-        }
+        setFavoriteRecipes(favoritesData.recipes);
+        console.log('Loaded favorites:', { count: favoritesData.recipes.length, ids: favoriteIds });
+      } else {
+        console.log('Failed to load favorites:', favoritesResponse.status);
       }
 
       // Load history
@@ -103,15 +110,10 @@ export default function HomePage() {
         const historyData = await historyResponse.json();
         const historyIds = historyData.recipes.map((r: Recipe) => r.id);
         setHistory(historyIds);
-        
-        // Store history recipes separately for display
-        if (historyData.recipes.length > 0) {
-          setRecipes(prev => {
-            const existingIds = prev.map(r => r.id);
-            const newRecipes = historyData.recipes.filter((r: Recipe) => !existingIds.includes(r.id));
-            return [...prev, ...newRecipes];
-          });
-        }
+        setHistoryRecipes(historyData.recipes);
+        console.log('Loaded history:', { count: historyData.recipes.length, ids: historyIds });
+      } else {
+        console.log('Failed to load history:', historyResponse.status);
       }
     } catch (error) {
       console.error('Failed to load user data:', error);
@@ -304,6 +306,7 @@ export default function HomePage() {
 
   // Handle favorite toggle
   const handleToggleFavorite = async (recipeId: string) => {
+    console.log('handleToggleFavorite called with recipeId:', recipeId, 'user:', user ? 'authenticated' : 'not authenticated');
     if (user) {
       // Use database for authenticated users
       try {
@@ -331,6 +334,23 @@ export default function HomePage() {
           } else {
             setFavorites(prev => prev.filter(id => id !== recipeId));
           }
+
+          // Update favoriteRecipes state
+          const recipeObj = recipes.find(r => r.id === recipeId) || recipeCache.find(r => r.id === recipeId);
+          if (recipeObj) {
+            if (isNowFavorite) {
+              setFavoriteRecipes(prev => {
+                const existingIds = prev.map(r => r.id);
+                if (!existingIds.includes(recipeObj.id)) {
+                  return [...prev, recipeObj];
+                }
+                return prev;
+              });
+            } else {
+              setFavoriteRecipes(prev => prev.filter(r => r.id !== recipeId));
+            }
+          }
+
           // Refresh counters to ensure accuracy
           refreshCounters();
         }
@@ -338,22 +358,60 @@ export default function HomePage() {
         console.error('Failed to toggle favorite:', error);
       }
     } else {
-      // Use localStorage for non-authenticated users
-      const isNowFavorite = StorageManager.toggleFavorite(recipeId);
-      setFavorites(StorageManager.getFavorites());
+      // Use session-based storage for non-authenticated users
+      console.log('Using session-based storage for non-authenticated user');
+      const isCurrentlyFavorite = favorites.includes(recipeId);
+      const isNowFavorite = !isCurrentlyFavorite;
       
-      // Add to history when favorited
       if (isNowFavorite) {
-        StorageManager.addToHistory(recipeId);
-        setHistory(StorageManager.getHistory());
+        setFavorites(prev => [...prev, recipeId]);
+        // Add to history when favorited
+        setHistory(prev => {
+          const existingIds = prev.map(id => id);
+          if (!existingIds.includes(recipeId)) {
+            return [recipeId, ...prev].slice(0, 50);
+          }
+          return prev;
+        });
+      } else {
+        setFavorites(prev => prev.filter(id => id !== recipeId));
       }
-      // Refresh counters to ensure accuracy
-      refreshCounters();
+      
+      // Update favoriteRecipes and historyRecipes state
+      const recipe = recipes.find(r => r.id === recipeId) || recipeCache.find(r => r.id === recipeId);
+      console.log('Looking for recipe:', { recipeId, found: !!recipe, recipesCount: recipes.length, cacheCount: recipeCache.length });
+      
+      if (recipe) {
+        if (isNowFavorite) {
+          setFavoriteRecipes(prev => {
+            const existingIds = prev.map(r => r.id);
+            if (!existingIds.includes(recipe.id)) {
+              console.log('Adding to favoriteRecipes:', recipe.title);
+              return [...prev, recipe];
+            }
+            return prev;
+          });
+          setHistoryRecipes(prev => {
+            const existingIds = prev.map(r => r.id);
+            if (!existingIds.includes(recipe.id)) {
+              console.log('Adding to historyRecipes:', recipe.title);
+              return [recipe, ...prev].slice(0, 50);
+            }
+            return prev;
+          });
+        } else {
+          setFavoriteRecipes(prev => prev.filter(r => r.id !== recipeId));
+        }
+      } else {
+        console.error('Recipe not found for ID:', recipeId);
+      }
+      console.log('Updated favorites:', isNowFavorite ? 'added' : 'removed', recipeId);
     }
   };
 
   // Handle recipe view
   const handleViewRecipe = async (recipe: Recipe) => {
+    console.log('handleViewRecipe called with recipe:', recipe.title, 'user:', user ? 'authenticated' : 'not authenticated');
     if (user) {
       // Use database for authenticated users
       try {
@@ -373,17 +431,41 @@ export default function HomePage() {
           const filtered = prev.filter(id => id !== recipe.id);
           return [recipe.id, ...filtered].slice(0, 30);
         });
+
+        // Update historyRecipes state
+        setHistoryRecipes(prev => {
+          const existingIds = prev.map(r => r.id);
+          if (!existingIds.includes(recipe.id)) {
+            return [recipe, ...prev].slice(0, 50);
+          }
+          return prev;
+        });
+
         // Refresh counters to ensure accuracy
         refreshCounters();
       } catch (error) {
         console.error('Failed to add to history:', error);
       }
     } else {
-      // Use localStorage for non-authenticated users
-      StorageManager.addToHistory(recipe.id);
-      setHistory(StorageManager.getHistory());
-      // Refresh counters to ensure accuracy
-      refreshCounters();
+      // Use session-based storage for non-authenticated users
+      console.log('Using session-based storage for non-authenticated user history');
+      setHistory(prev => {
+        const existingIds = prev.map(id => id);
+        if (!existingIds.includes(recipe.id)) {
+          return [recipe.id, ...prev].slice(0, 50);
+        }
+        return prev;
+      });
+      
+      // Add recipe to historyRecipes if not already there
+      setHistoryRecipes(prev => {
+        const existingIds = prev.map(r => r.id);
+        if (!existingIds.includes(recipe.id)) {
+          return [recipe, ...prev].slice(0, 50); // Limit to 50 items
+        }
+        return prev;
+      });
+      console.log('Updated history:', 'added', recipe.title);
     }
     
     setSelectedRecipe(recipe);
@@ -406,6 +488,10 @@ export default function HomePage() {
         if (response.ok) {
           // Update local state
           setHistory(prev => prev.filter(id => id !== recipeId));
+          
+          // Remove from historyRecipes state
+          setHistoryRecipes(prev => prev.filter(recipe => recipe.id !== recipeId));
+          
           // Also remove from recipes if it's there
           setRecipes(prev => prev.filter(recipe => recipe.id !== recipeId));
           // Refresh counters to ensure accuracy
@@ -415,13 +501,11 @@ export default function HomePage() {
         console.error('Failed to remove from history:', error);
       }
     } else {
-      // Use localStorage for non-authenticated users
-      StorageManager.removeFromHistory(recipeId);
-      setHistory(StorageManager.getHistory());
-      // Also remove from recipes if it's there
-      setRecipes(prev => prev.filter(recipe => recipe.id !== recipeId));
-      // Refresh counters to ensure accuracy
-      refreshCounters();
+      // Use session-based storage for non-authenticated users
+      setHistory(prev => prev.filter(id => id !== recipeId));
+      
+      // Remove from historyRecipes state
+      setHistoryRecipes(prev => prev.filter(recipe => recipe.id !== recipeId));
     }
   };
 
@@ -441,6 +525,10 @@ export default function HomePage() {
         if (response.ok) {
           // Update local state
           setFavorites(prev => prev.filter(id => id !== recipeId));
+          
+          // Remove from favoriteRecipes state
+          setFavoriteRecipes(prev => prev.filter(recipe => recipe.id !== recipeId));
+          
           // Also remove from recipes if it's there
           setRecipes(prev => prev.filter(recipe => recipe.id !== recipeId));
           // Refresh counters to ensure accuracy
@@ -450,13 +538,11 @@ export default function HomePage() {
         console.error('Failed to remove from favorites:', error);
       }
     } else {
-      // Use localStorage for non-authenticated users
-      StorageManager.removeFromFavorites(recipeId);
-      setFavorites(StorageManager.getFavorites());
-      // Also remove from recipes if it's there
-      setRecipes(prev => prev.filter(recipe => recipe.id !== recipeId));
-      // Refresh counters to ensure accuracy
-      refreshCounters();
+      // Use session-based storage for non-authenticated users
+      setFavorites(prev => prev.filter(id => id !== recipeId));
+      
+      // Remove from favoriteRecipes state
+      setFavoriteRecipes(prev => prev.filter(recipe => recipe.id !== recipeId));
     }
   };
 
@@ -480,11 +566,13 @@ export default function HomePage() {
   const handleLogout = () => {
     setUser(null);
     setFavorites([]);
+    setFavoriteRecipes([]);
     setHistory([]);
     setRecipes([]);
-    // Fallback to localStorage for non-authenticated users
-    setFavorites(StorageManager.getFavorites());
-    setHistory(StorageManager.getHistory());
+    setHistoryRecipes([]);
+    // Clear localStorage and session storage when logging out
+    StorageManager.clearAll();
+    sessionStorage.removeItem('session-initialized');
   };
 
 
@@ -498,9 +586,9 @@ export default function HomePage() {
         // For authenticated users, reload from database to ensure accuracy
         await loadUserData(user.id);
       } else {
-        // For non-authenticated users, reload from localStorage
-        setFavorites(StorageManager.getFavorites());
-        setHistory(StorageManager.getHistory());
+        // For non-authenticated users, don't clear state during refresh
+        // State is managed by user interactions, not by refreshCounters
+        console.log('Non-authenticated user - skipping counter refresh');
       }
     } catch (error) {
       console.error('Error refreshing counters:', error);
@@ -520,7 +608,13 @@ export default function HomePage() {
         const favoriteRecipes = getFavoriteRecipes();
         // If no favorites, show history instead
         if (favoriteRecipes.length === 0) {
-          baseRecipes = getHistoryRecipes();
+          const historyRecipes = getHistoryRecipes();
+          // If no history either, show the main recipes state
+          if (historyRecipes.length === 0) {
+            baseRecipes = recipes;
+          } else {
+            baseRecipes = historyRecipes;
+          }
         } else {
           baseRecipes = favoriteRecipes;
         }
@@ -546,15 +640,25 @@ export default function HomePage() {
 
   // Get favorite recipes with filters applied
   const getFavoriteRecipes = (): Recipe[] => {
-    // Get favorite recipes from the main recipes state (which includes database recipes)
-    const favoriteRecipes = recipes.filter(recipe => favorites.includes(recipe.id));
+    // For both authenticated and non-authenticated users, use the favoriteRecipes state
+    console.log('getFavoriteRecipes called:', { 
+      user: user ? 'authenticated' : 'not authenticated', 
+      favoriteRecipes: favoriteRecipes.length,
+      favorites: favorites.length,
+      favoriteRecipesTitles: favoriteRecipes.map(r => r.title)
+    });
     return applyFiltersToRecipes(favoriteRecipes);
   };
 
   // Get history recipes with filters applied
   const getHistoryRecipes = (): Recipe[] => {
-    // Get history recipes from the main recipes state (which includes database recipes)
-    const historyRecipes = recipes.filter(recipe => history.includes(recipe.id));
+    // For both authenticated and non-authenticated users, use the historyRecipes state
+    console.log('getHistoryRecipes called:', { 
+      user: user ? 'authenticated' : 'not authenticated', 
+      historyRecipes: historyRecipes.length,
+      history: history.length,
+      historyRecipesTitles: historyRecipes.map(r => r.title)
+    });
     return applyFiltersToRecipes(historyRecipes);
   };
 
@@ -795,7 +899,7 @@ export default function HomePage() {
                 }`}
               >
                 <Heart className="w-4 h-4 mr-2" />
-                Favorites ({isRefreshingCounters ? "..." : favorites.length})
+                Favorites ({isRefreshingCounters ? "..." : getFavoriteRecipes().length})
               </button>
               <button
                 onClick={async () => {
@@ -812,7 +916,7 @@ export default function HomePage() {
                 }`}
               >
                 <History className="w-4 h-4 mr-2" />
-                History ({isRefreshingCounters ? "..." : history.length})
+                History ({isRefreshingCounters ? "..." : getHistoryRecipes().length})
               </button>
             </div>
           </div>
@@ -1153,21 +1257,26 @@ export default function HomePage() {
               </h2>
               <p className="text-gray-600 text-lg">Recipes you love and want to cook again</p>
             </div>
-            {favorites.length === 0 ? (
+            {getFavoriteRecipes().length === 0 ? (
               <div className="text-center py-20">
                 <div className="bg-white/90 backdrop-blur-xl rounded-3xl shadow-2xl p-16 border border-white/30 max-w-lg mx-auto">
                   <div className="w-24 h-24 bg-gradient-to-r from-pink-200 to-red-200 rounded-full flex items-center justify-center mx-auto mb-8 shadow-xl">
                     <Heart className="w-12 h-12 text-pink-400" />
                   </div>
-                  <h3 className="text-2xl text-gray-800 font-bold mb-4">No favorite recipes yet</h3>
+                  <h3 className="text-2xl text-gray-800 font-bold mb-4">
+                    {favorites.length > 0 ? "Favorite recipes not found" : "No favorite recipes yet"}
+                  </h3>
                   <p className="text-gray-600 mb-6">
-                    Upload an image and add recipes to your favorites to see them here
+                    {favorites.length > 0 
+                      ? "Your favorite recipes may have been removed or are no longer available. Try exploring new recipes!"
+                      : "Upload an image and add recipes to your favorites to see them here"
+                    }
                   </p>
                   <button
                     onClick={() => setActiveTab("upload")}
                     className="bg-gradient-to-r from-pink-500 to-red-500 text-white px-8 py-3 rounded-xl font-semibold hover:from-pink-600 hover:to-red-600 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
                   >
-                    Start Exploring
+                    {favorites.length > 0 ? "Explore New Recipes" : "Start Exploring"}
                   </button>
                 </div>
               </div>
@@ -1205,21 +1314,26 @@ export default function HomePage() {
               </h2>
               <p className="text-gray-600 text-lg">Your cooking journey and discoveries</p>
             </div>
-            {history.length === 0 ? (
+            {getHistoryRecipes().length === 0 ? (
               <div className="text-center py-20">
                 <div className="bg-white/90 backdrop-blur-xl rounded-3xl shadow-2xl p-16 border border-white/30 max-w-lg mx-auto">
                   <div className="w-24 h-24 bg-gradient-to-r from-blue-200 to-indigo-200 rounded-full flex items-center justify-center mx-auto mb-8 shadow-xl">
                     <History className="w-12 h-12 text-blue-400" />
                   </div>
-                  <h3 className="text-2xl text-gray-800 font-bold mb-4">No recent activity</h3>
+                  <h3 className="text-2xl text-gray-800 font-bold mb-4">
+                    {history.length > 0 ? "History recipes not found" : "No recent activity"}
+                  </h3>
                   <p className="text-gray-600 mb-6">
-                    Start exploring recipes to build your cooking history
+                    {history.length > 0 
+                      ? "Your recently viewed recipes may have been removed or are no longer available. Try exploring new recipes!"
+                      : "Start exploring recipes to build your cooking history"
+                    }
                   </p>
                   <button
                     onClick={() => setActiveTab("upload")}
                     className="bg-gradient-to-r from-blue-500 to-indigo-500 text-white px-8 py-3 rounded-xl font-semibold hover:from-blue-600 hover:to-indigo-600 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
                   >
-                    Start Exploring
+                    {history.length > 0 ? "Explore New Recipes" : "Start Exploring"}
                   </button>
                 </div>
               </div>
