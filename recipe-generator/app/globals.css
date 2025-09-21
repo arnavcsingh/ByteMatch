@@ -57,3 +57,22 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* Prevent zooming and ensure stable background */
+@layer utilities {
+  .prevent-zoom {
+    touch-action: manipulation;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+  }
+  
+  .stable-background {
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    perspective: 1000px;
+  }
+}

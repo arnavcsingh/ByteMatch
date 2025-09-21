@@ -70,8 +70,8 @@ export default function ImageUpload({
         <div
           className={`group relative border-2 border-dashed rounded-3xl p-16 text-center transition-all duration-500 ${
             dragActive
-              ? "border-orange-400 bg-gradient-to-br from-orange-50 to-red-50 shadow-3xl scale-105"
-              : "border-orange-200 hover:border-orange-300 bg-white/90 backdrop-blur-xl hover:shadow-2xl hover:scale-102"
+              ? "border-orange-400 bg-gradient-to-br from-orange-50/80 to-red-50/80 shadow-3xl scale-105"
+              : "border-orange-200 hover:border-orange-300 bg-white/60 backdrop-blur-xl hover:shadow-2xl hover:scale-102"
           } ${isProcessing ? "opacity-50 pointer-events-none" : ""}`}
           onDragEnter={handleDrag}
           onDragLeave={handleDrag}
@@ -131,7 +131,7 @@ export default function ImageUpload({
         </div>
       ) : (
         <div className="relative group">
-          <div className="relative rounded-3xl overflow-hidden bg-gradient-to-br from-orange-50 to-red-50 shadow-2xl border border-orange-200/50">
+          <div className="relative rounded-3xl overflow-hidden bg-gradient-to-br from-orange-50/60 to-red-50/60 shadow-2xl border border-orange-200/50 backdrop-blur-sm">
             <img
               src={uploadedImage.preview}
               alt="Uploaded food"

@@ -11,3 +11,5 @@ export async function GET() {
     MONGODB_URI_PREFIX: process.env.MONGODB_URI ? process.env.MONGODB_URI.substring(0, 20) + '...' : 'Not set'
   });
 }
+
+

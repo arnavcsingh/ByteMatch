@@ -71,7 +71,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Remove if already exists and add to front
-    user.history = user.history.filter(id => id !== recipeId);
+    user.history = user.history.filter((id: any) => id !== recipeId);
     user.history.unshift(recipeId);
     
     // Keep only last 50 items
