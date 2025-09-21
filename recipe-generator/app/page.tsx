@@ -1185,7 +1185,7 @@ export default function HomePage() {
                       isFavorite={true}
                       onViewDetails={handleViewRecipe}
                       onRemove={handleRemoveFromFavorites}
-                      showRemoveButton={true}
+                      showRemoveButton={false}
                     />
                   </div>
                 ))}
