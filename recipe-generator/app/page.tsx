@@ -87,7 +87,7 @@ export default function HomePage() {
         const favoriteIds = favoritesData.recipes.map((r: Recipe) => r.id);
         setFavorites(favoriteIds);
         
-        // Also load the actual recipe data for display
+        // Store favorite recipes separately for display
         if (favoritesData.recipes.length > 0) {
           setRecipes(prev => {
             const existingIds = prev.map(r => r.id);
@@ -104,7 +104,7 @@ export default function HomePage() {
         const historyIds = historyData.recipes.map((r: Recipe) => r.id);
         setHistory(historyIds);
         
-        // Also load the actual recipe data for display
+        // Store history recipes separately for display
         if (historyData.recipes.length > 0) {
           setRecipes(prev => {
             const existingIds = prev.map(r => r.id);
@@ -287,11 +287,32 @@ export default function HomePage() {
     }
   }, [classification, recipeCache, applyFiltersToRecipes]);
 
+  // Helper function to save recipe to database
+  const saveRecipeToDatabase = async (recipe: Recipe) => {
+    try {
+      await fetch('/api/recipes/save', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(recipe),
+      });
+    } catch (error) {
+      console.error('Failed to save recipe to database:', error);
+    }
+  };
+
   // Handle favorite toggle
   const handleToggleFavorite = async (recipeId: string) => {
     if (user) {
       // Use database for authenticated users
       try {
+        // First, save the recipe to database if it doesn't exist
+        const recipe = recipes.find(r => r.id === recipeId) || recipeCache.find(r => r.id === recipeId);
+        if (recipe) {
+          await saveRecipeToDatabase(recipe);
+        }
+
         const response = await fetch('/api/user/favorites', {
           method: 'POST',
           headers: {
@@ -336,6 +357,9 @@ export default function HomePage() {
     if (user) {
       // Use database for authenticated users
       try {
+        // First, save the recipe to database if it doesn't exist
+        await saveRecipeToDatabase(recipe);
+
         await fetch('/api/user/history', {
           method: 'POST',
           headers: {
@@ -522,13 +546,15 @@ export default function HomePage() {
 
   // Get favorite recipes with filters applied
   const getFavoriteRecipes = (): Recipe[] => {
-    const favoriteRecipes = recipeCache.filter(recipe => favorites.includes(recipe.id));
+    // Get favorite recipes from the main recipes state (which includes database recipes)
+    const favoriteRecipes = recipes.filter(recipe => favorites.includes(recipe.id));
     return applyFiltersToRecipes(favoriteRecipes);
   };
 
   // Get history recipes with filters applied
   const getHistoryRecipes = (): Recipe[] => {
-    const historyRecipes = recipeCache.filter(recipe => history.includes(recipe.id));
+    // Get history recipes from the main recipes state (which includes database recipes)
+    const historyRecipes = recipes.filter(recipe => history.includes(recipe.id));
     return applyFiltersToRecipes(historyRecipes);
   };
 
@@ -755,7 +781,13 @@ export default function HomePage() {
                 Upload
               </button>
               <button
-                onClick={() => setActiveTab("favorites")}
+                onClick={async () => {
+                  setActiveTab("favorites");
+                  setCurrentPage(1);
+                  if (user) {
+                    await refreshCounters();
+                  }
+                }}
                 className={`px-6 py-3 rounded-xl text-sm font-semibold transition-all duration-300 flex items-center ${
                   activeTab === "favorites"
                     ? "bg-gradient-to-r from-orange-500 to-red-500 text-white shadow-xl transform scale-105 hover:scale-110"
@@ -766,7 +798,13 @@ export default function HomePage() {
                 Favorites ({isRefreshingCounters ? "..." : favorites.length})
               </button>
               <button
-                onClick={() => setActiveTab("history")}
+                onClick={async () => {
+                  setActiveTab("history");
+                  setCurrentPage(1);
+                  if (user) {
+                    await refreshCounters();
+                  }
+                }}
                 className={`px-6 py-3 rounded-xl text-sm font-semibold transition-all duration-300 flex items-center ${
                   activeTab === "history"
                     ? "bg-gradient-to-r from-orange-500 to-red-500 text-white shadow-xl transform scale-105 hover:scale-110"
