@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Search, X, Plus, Filter } from "lucide-react";
+import { Search, X, Plus, Filter, Sparkles, ChefHat, Clock, Globe } from "lucide-react";
 import { FilterOptions } from "@/types";
 
 interface IngredientFilterProps {
@@ -144,170 +144,199 @@ export default function IngredientFilter({
   );
 
   return (
-    <div className="bg-white rounded-lg shadow-md p-4">
-      <div className="flex items-center justify-between mb-4">
-        <h3 className="text-lg font-semibold text-gray-900 flex items-center">
-          <Filter className="w-5 h-5 mr-2" />
-          Filter Recipes
-        </h3>
-        <button
-          onClick={() => setIsExpanded(!isExpanded)}
-          className="text-primary hover:text-primary/80 transition-colors"
-        >
-          {isExpanded ? "Collapse" : "Expand"}
-        </button>
+    <div className="bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl p-8 border border-white/30 relative overflow-hidden">
+      {/* Animated background elements */}
+      <div className="absolute inset-0 overflow-hidden rounded-3xl">
+        <div className="absolute -top-10 -right-10 w-20 h-20 bg-gradient-to-br from-orange-200/20 to-red-200/20 rounded-full blur-xl animate-pulse"></div>
+        <div className="absolute -bottom-10 -left-10 w-20 h-20 bg-gradient-to-br from-amber-200/20 to-orange-200/20 rounded-full blur-xl animate-pulse delay-1000"></div>
       </div>
-
-      {/* Available Ingredients */}
-      <div className="mb-4">
-        <label className="block text-sm font-medium text-gray-700 mb-2">
-          Available Ingredients
-        </label>
-        
-        {/* Selected Ingredients */}
-        {availableIngredients.length > 0 && (
-          <div className="flex flex-wrap gap-2 mb-2">
-            {availableIngredients.map((ingredient) => (
-              <span
-                key={ingredient}
-                className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-primary text-white"
-              >
-                {ingredient}
-                <button
-                  onClick={() => removeIngredient(ingredient)}
-                  className="ml-2 hover:text-gray-300"
-                >
-                  <X className="w-3 h-3" />
-                </button>
-              </span>
-            ))}
-          </div>
-        )}
-
-        {/* Add Ingredients */}
-        <div className="flex space-x-2 mb-2">
-          <div className="flex-1 relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
-            <input
-              type="text"
-              placeholder="Search ingredients..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary focus:border-transparent"
-            />
+      
+      <div className="relative">
+        <div className="flex items-center justify-between mb-8">
+          <div className="flex items-center">
+            <div className="w-12 h-12 bg-gradient-to-r from-orange-400 to-red-400 rounded-full flex items-center justify-center mr-4 shadow-xl">
+              <Filter className="w-6 h-6 text-white" />
+            </div>
+            <div>
+              <h3 className="text-2xl font-bold text-gray-900 font-serif">
+                🎯 Filter Recipes
+              </h3>
+              <p className="text-gray-600 text-sm">Customize your search preferences</p>
+            </div>
           </div>
           <button
-            onClick={addCustomIngredient}
-            disabled={!searchTerm.trim()}
-            className="px-4 py-2 bg-primary text-white rounded-md hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed flex items-center"
+            onClick={() => setIsExpanded(!isExpanded)}
+            className="group flex items-center px-6 py-3 bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-2xl font-semibold hover:from-orange-600 hover:to-red-600 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
           >
-            <Plus className="w-4 h-4" />
+            <Sparkles className="w-4 h-4 mr-2 group-hover:rotate-12 transition-transform duration-300" />
+            {isExpanded ? "Collapse" : "Expand"}
           </button>
         </div>
 
-        {/* Common Ingredients */}
-        {searchTerm && filteredIngredients.length > 0 && (
-          <div className="max-h-32 overflow-y-auto border border-gray-200 rounded-md">
-            {filteredIngredients.slice(0, 10).map((ingredient) => (
-              <button
-                key={ingredient}
-                onClick={() => addIngredient(ingredient)}
-                className="w-full text-left px-3 py-2 hover:bg-gray-50 text-sm"
-              >
-                {ingredient}
-              </button>
-            ))}
+        {/* Available Ingredients */}
+        <div className="mb-8">
+          <div className="flex items-center mb-4">
+            <ChefHat className="w-5 h-5 text-orange-500 mr-2" />
+            <label className="text-lg font-bold text-gray-800">
+              Available Ingredients
+            </label>
+          </div>
+          
+          {/* Selected Ingredients */}
+          {availableIngredients.length > 0 && (
+            <div className="flex flex-wrap gap-3 mb-4">
+              {availableIngredients.map((ingredient) => (
+                <span
+                  key={ingredient}
+                  className="group inline-flex items-center px-4 py-2 rounded-2xl text-sm font-semibold bg-gradient-to-r from-orange-500 to-red-500 text-white shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
+                >
+                  {ingredient}
+                  <button
+                    onClick={() => removeIngredient(ingredient)}
+                    className="ml-2 hover:text-gray-300 transition-colors duration-300"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
+                </span>
+              ))}
+            </div>
+          )}
+
+          {/* Add Ingredients */}
+          <div className="flex space-x-3 mb-4">
+            <div className="flex-1 relative">
+              <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+              <input
+                type="text"
+                placeholder="Search ingredients..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full pl-12 pr-4 py-4 border-2 border-gray-200 rounded-2xl focus:ring-4 focus:ring-orange-500/20 focus:border-orange-500 transition-all duration-300 bg-white/80 backdrop-blur-sm"
+              />
+            </div>
+            <button
+              onClick={addCustomIngredient}
+              disabled={!searchTerm.trim()}
+              className="group px-6 py-4 bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-2xl hover:from-orange-600 hover:to-red-600 disabled:opacity-50 disabled:cursor-not-allowed flex items-center shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
+            >
+              <Plus className="w-5 h-5 group-hover:rotate-90 transition-transform duration-300" />
+            </button>
+          </div>
+
+          {/* Common Ingredients */}
+          {searchTerm && filteredIngredients.length > 0 && (
+            <div className="max-h-40 overflow-y-auto bg-white/80 backdrop-blur-sm border-2 border-gray-200 rounded-2xl shadow-lg">
+              {filteredIngredients.slice(0, 10).map((ingredient) => (
+                <button
+                  key={ingredient}
+                  onClick={() => addIngredient(ingredient)}
+                  className="w-full text-left px-4 py-3 hover:bg-gradient-to-r hover:from-orange-50 hover:to-red-50 text-sm font-medium transition-all duration-300 border-b border-gray-100 last:border-b-0"
+                >
+                  {ingredient}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Expanded Filters */}
+        {isExpanded && (
+          <div className="space-y-8">
+            {/* Time Filters */}
+            <div className="bg-white/60 backdrop-blur-sm rounded-2xl p-6 border border-white/30">
+              <div className="flex items-center mb-4">
+                <Clock className="w-5 h-5 text-blue-500 mr-2" />
+                <h4 className="text-lg font-bold text-gray-800">⏱️ Time Filters</h4>
+              </div>
+              <div className="grid grid-cols-2 gap-6">
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    Max Prep Time (min)
+                  </label>
+                  <input
+                    type="number"
+                    min="0"
+                    max="180"
+                    value={maxPrepTime}
+                    onChange={(e) => setMaxPrepTime(parseInt(e.target.value) || 0)}
+                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-2xl focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 bg-white/80 backdrop-blur-sm"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    Max Cook Time (min)
+                  </label>
+                  <input
+                    type="number"
+                    min="0"
+                    max="180"
+                    value={maxCookTime}
+                    onChange={(e) => setMaxCookTime(parseInt(e.target.value) || 0)}
+                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-2xl focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 bg-white/80 backdrop-blur-sm"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Difficulty Filter */}
+            <div className="bg-white/60 backdrop-blur-sm rounded-2xl p-6 border border-white/30">
+              <div className="flex items-center mb-4">
+                <ChefHat className="w-5 h-5 text-green-500 mr-2" />
+                <h4 className="text-lg font-bold text-gray-800">🎯 Difficulty Level</h4>
+              </div>
+              <div className="flex space-x-3">
+                {difficulties.map((diff) => (
+                  <button
+                    key={diff}
+                    onClick={() => toggleDifficulty(diff)}
+                    className={`px-6 py-3 rounded-2xl text-sm font-bold transition-all duration-300 transform hover:scale-105 ${
+                      difficulty.includes(diff)
+                        ? "bg-gradient-to-r from-green-500 to-emerald-500 text-white shadow-lg"
+                        : "bg-white/80 text-gray-700 hover:bg-gradient-to-r hover:from-green-50 hover:to-emerald-50 border-2 border-gray-200 hover:border-green-300"
+                    }`}
+                  >
+                    {diff.toUpperCase()}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Cuisine Filter */}
+            <div className="bg-white/60 backdrop-blur-sm rounded-2xl p-6 border border-white/30">
+              <div className="flex items-center mb-4">
+                <Globe className="w-5 h-5 text-purple-500 mr-2" />
+                <h4 className="text-lg font-bold text-gray-800">🌍 Cuisine Types</h4>
+              </div>
+              <div className="flex flex-wrap gap-3">
+                {cuisines.map((cuisineType) => (
+                  <button
+                    key={cuisineType}
+                    onClick={() => toggleCuisine(cuisineType)}
+                    className={`px-4 py-2 rounded-2xl text-sm font-bold transition-all duration-300 transform hover:scale-105 ${
+                      cuisine.includes(cuisineType)
+                        ? "bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg"
+                        : "bg-white/80 text-gray-700 hover:bg-gradient-to-r hover:from-purple-50 hover:to-pink-50 border-2 border-gray-200 hover:border-purple-300"
+                    }`}
+                  >
+                    {cuisineType}
+                  </button>
+                ))}
+              </div>
+            </div>
           </div>
         )}
-      </div>
 
-      {/* Expanded Filters */}
-      {isExpanded && (
-        <div className="space-y-4">
-          {/* Time Filters */}
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Max Prep Time (min)
-              </label>
-              <input
-                type="number"
-                min="0"
-                max="180"
-                value={maxPrepTime}
-                onChange={(e) => setMaxPrepTime(parseInt(e.target.value) || 0)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary focus:border-transparent"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Max Cook Time (min)
-              </label>
-              <input
-                type="number"
-                min="0"
-                max="180"
-                value={maxCookTime}
-                onChange={(e) => setMaxCookTime(parseInt(e.target.value) || 0)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary focus:border-transparent"
-              />
-            </div>
-          </div>
-
-          {/* Difficulty Filter */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Difficulty
-            </label>
-            <div className="flex space-x-2">
-              {difficulties.map((diff) => (
-                <button
-                  key={diff}
-                  onClick={() => toggleDifficulty(diff)}
-                  className={`px-3 py-1 rounded-full text-sm font-medium transition-colors ${
-                    difficulty.includes(diff)
-                      ? "bg-primary text-white"
-                      : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                  }`}
-                >
-                  {diff}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Cuisine Filter */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Cuisine
-            </label>
-            <div className="flex flex-wrap gap-2">
-              {cuisines.map((cuisineType) => (
-                <button
-                  key={cuisineType}
-                  onClick={() => toggleCuisine(cuisineType)}
-                  className={`px-3 py-1 rounded-full text-sm font-medium transition-colors ${
-                    cuisine.includes(cuisineType)
-                      ? "bg-primary text-white"
-                      : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                  }`}
-                >
-                  {cuisineType}
-                </button>
-              ))}
-            </div>
-          </div>
+        {/* Clear Filters */}
+        <div className="mt-8 pt-6 border-t border-gray-200/50">
+          <button
+            onClick={clearAllFilters}
+            className="group w-full px-6 py-4 text-sm font-bold text-gray-700 hover:text-white border-2 border-gray-300 rounded-2xl hover:bg-gradient-to-r hover:from-red-500 hover:to-pink-500 hover:border-transparent transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
+          >
+            <span className="group-hover:scale-110 transition-transform duration-300">
+              🗑️ Clear All Filters
+            </span>
+          </button>
         </div>
-      )}
-
-      {/* Clear Filters */}
-      <div className="mt-4 pt-4 border-t border-gray-200">
-        <button
-          onClick={clearAllFilters}
-          className="w-full px-4 py-2 text-sm text-gray-600 hover:text-gray-800 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors"
-        >
-          Clear All Filters
-        </button>
       </div>
     </div>
   );

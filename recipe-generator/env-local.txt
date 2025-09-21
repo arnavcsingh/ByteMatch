@@ -1,0 +1,4 @@
+MONGODB_URI=mongodb+srv://recipe-app-user:HelloWorld2025!@recipegen.xu1wygf.mongodb.net/recipe-generator?retryWrites=true&w=majority&appName=RecipeGen
+JWT_SECRET=your-super-secret-jwt-key-change-in-production
+HF_API_KEY=2OhrkWfornDdXvu7mDAtVgx778TZ6HA8chxQ9766wOUR60yTVzYQ96t0
+SPOONACULAR_API_KEY=your-spoonacular-api-key
