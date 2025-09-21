@@ -153,6 +153,21 @@ export class StorageManager {
   }
 
   /**
+   * Remove recipe from history
+   */
+  static removeFromHistory(recipeId: string): void {
+    if (typeof window === "undefined") return;
+
+    try {
+      const history = this.getHistory();
+      const updatedHistory = history.filter((id) => id !== recipeId);
+      localStorage.setItem(STORAGE_KEYS.HISTORY, JSON.stringify(updatedHistory));
+    } catch (error) {
+      console.error("Error removing from history:", error);
+    }
+  }
+
+  /**
    * Clear all stored data
    */
   static clearAll(): void {

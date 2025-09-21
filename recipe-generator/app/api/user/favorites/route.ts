@@ -75,7 +75,7 @@ export async function POST(request: NextRequest) {
 
     if (isCurrentlyFavorite) {
       // Remove from favorites
-      user.favorites = user.favorites.filter(id => id !== recipeId);
+      user.favorites = user.favorites.filter((id: any) => id !== recipeId);
       isNowFavorite = false;
     } else {
       // Add to favorites

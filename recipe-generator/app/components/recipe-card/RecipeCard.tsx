@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Clock, Users, ChefHat, Heart, ExternalLink, Sparkles, Star } from "lucide-react";
+import { Clock, Users, ChefHat, Heart, ExternalLink, Sparkles, Star, X } from "lucide-react";
 import { Recipe } from "@/types";
 import { usePexelsImage } from "@/app/hooks/usePexelsImage";
 
@@ -10,6 +10,8 @@ interface RecipeCardProps {
   onToggleFavorite?: (recipeId: string) => void;
   isFavorite?: boolean;
   onViewDetails?: (recipe: Recipe) => void;
+  onRemove?: (recipeId: string) => void;
+  showRemoveButton?: boolean;
 }
 
 export default function RecipeCard({
@@ -17,6 +19,8 @@ export default function RecipeCard({
   onToggleFavorite,
   isFavorite = false,
   onViewDetails,
+  onRemove,
+  showRemoveButton = false,
 }: RecipeCardProps) {
   const [imageError, setImageError] = useState(false);
   const [showPexelsFallback, setShowPexelsFallback] = useState(false);
@@ -108,8 +112,19 @@ export default function RecipeCard({
           </button>
         )}
 
+        {/* Remove Button */}
+        {showRemoveButton && onRemove && (
+          <button
+            onClick={() => onRemove(recipe.id)}
+            className="absolute top-4 left-4 p-2 rounded-full bg-red-500/90 text-white hover:bg-red-600 hover:scale-110 transition-all duration-300 shadow-2xl backdrop-blur-sm border border-red-400/50 z-10"
+            title="Remove from history"
+          >
+            <X className="w-4 h-4" />
+          </button>
+        )}
+
         {/* Difficulty Badge */}
-        <div className="absolute top-4 left-4">
+        <div className={`absolute top-4 ${showRemoveButton ? 'left-16' : 'left-4'}`}>
           <span
             className={`px-4 py-2 rounded-2xl text-xs font-bold shadow-2xl backdrop-blur-sm border border-white/30 ${getDifficultyColor(
               recipe.difficulty

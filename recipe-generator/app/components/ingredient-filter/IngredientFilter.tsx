@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Search, X, Plus, Filter, Sparkles, ChefHat, Clock, Globe } from "lucide-react";
 import { FilterOptions } from "@/types";
 
@@ -78,16 +78,23 @@ export default function IngredientFilter({
     initialFilters.availableIngredients || []
   );
   const [searchTerm, setSearchTerm] = useState("");
-  const [maxPrepTime, setMaxPrepTime] = useState(initialFilters.maxPrepTime || 60);
-  const [maxCookTime, setMaxCookTime] = useState(initialFilters.maxCookTime || 60);
+  const [maxPrepTime, setMaxPrepTime] = useState(initialFilters.maxPrepTime || null);
+  const [maxCookTime, setMaxCookTime] = useState(initialFilters.maxCookTime || null);
   const [difficulty, setDifficulty] = useState<string[]>(initialFilters.difficulty || []);
   const [cuisine, setCuisine] = useState<string[]>(initialFilters.cuisine || []);
   const [isExpanded, setIsExpanded] = useState(false);
+  const [hasPendingChanges, setHasPendingChanges] = useState(false);
 
-  const cuisines = ["Italian", "American", "Mexican", "Indian", "Japanese", "Chinese", "Mediterranean", "French"];
+  const cuisines = ["Italian", "American", "Mexican", "Indian", "Japanese", "Chinese", "Mediterranean", "French", "Various"];
   const difficulties = ["easy", "medium", "hard"];
 
+  // Track when filters change to show pending changes
   useEffect(() => {
+    setHasPendingChanges(true);
+  }, [availableIngredients, maxPrepTime, maxCookTime, difficulty, cuisine]);
+
+  // Function to apply filters
+  const applyFilters = () => {
     onFilterChange({
       availableIngredients,
       maxPrepTime,
@@ -95,7 +102,8 @@ export default function IngredientFilter({
       difficulty: difficulty.length > 0 ? difficulty : undefined,
       cuisine: cuisine.length > 0 ? cuisine : undefined,
     });
-  }, [availableIngredients, maxPrepTime, maxCookTime, difficulty, cuisine, onFilterChange]);
+    setHasPendingChanges(false);
+  };
 
   const addIngredient = (ingredient: string) => {
     if (!availableIngredients.includes(ingredient)) {
@@ -132,23 +140,30 @@ export default function IngredientFilter({
 
   const clearAllFilters = () => {
     setAvailableIngredients([]);
-    setMaxPrepTime(60);
-    setMaxCookTime(60);
+    setMaxPrepTime(null);
+    setMaxCookTime(null);
     setDifficulty([]);
     setCuisine([]);
+    setHasPendingChanges(true);
   };
 
-  const filteredIngredients = commonIngredients.filter((ingredient) =>
-    ingredient.toLowerCase().includes(searchTerm.toLowerCase()) &&
-    !availableIngredients.includes(ingredient)
-  );
+  const filteredIngredients = useMemo(() => {
+    if (!searchTerm.trim()) return [];
+    
+    const searchLower = searchTerm.toLowerCase();
+    return commonIngredients
+      .filter((ingredient) => 
+        ingredient.toLowerCase().includes(searchLower) &&
+        !availableIngredients.includes(ingredient)
+      )
+      .slice(0, 10); // Limit to 10 results for performance
+  }, [searchTerm, availableIngredients]);
 
   return (
-    <div className="bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl p-8 border border-white/30 relative overflow-hidden">
-      {/* Animated background elements */}
+    <div className="bg-white/70 backdrop-blur-xl rounded-3xl shadow-2xl p-8 border border-white/30 relative overflow-hidden">
+      {/* Subtle background element */}
       <div className="absolute inset-0 overflow-hidden rounded-3xl">
-        <div className="absolute -top-10 -right-10 w-20 h-20 bg-gradient-to-br from-orange-200/20 to-red-200/20 rounded-full blur-xl animate-pulse"></div>
-        <div className="absolute -bottom-10 -left-10 w-20 h-20 bg-gradient-to-br from-amber-200/20 to-orange-200/20 rounded-full blur-xl animate-pulse delay-1000"></div>
+        <div className="absolute -top-10 -right-10 w-20 h-20 bg-gradient-to-br from-orange-200/10 to-red-200/10 rounded-full blur-xl"></div>
       </div>
       
       <div className="relative">
@@ -165,8 +180,11 @@ export default function IngredientFilter({
             </div>
           </div>
           <button
-            onClick={() => setIsExpanded(!isExpanded)}
-            className="group flex items-center px-6 py-3 bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-2xl font-semibold hover:from-orange-600 hover:to-red-600 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
+            onClick={() => {
+              console.log('Expand button clicked, current isExpanded:', isExpanded);
+              setIsExpanded(!isExpanded);
+            }}
+            className="group flex items-center px-6 py-3 bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-2xl font-semibold hover:from-orange-600 hover:to-red-600 shadow-lg hover:shadow-xl transition-all duration-200"
           >
             <Sparkles className="w-4 h-4 mr-2 group-hover:rotate-12 transition-transform duration-300" />
             {isExpanded ? "Collapse" : "Expand"}
@@ -188,7 +206,7 @@ export default function IngredientFilter({
               {availableIngredients.map((ingredient) => (
                 <span
                   key={ingredient}
-                  className="group inline-flex items-center px-4 py-2 rounded-2xl text-sm font-semibold bg-gradient-to-r from-orange-500 to-red-500 text-white shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
+                  className="group inline-flex items-center px-4 py-2 rounded-2xl text-sm font-semibold bg-gradient-to-r from-orange-500 to-red-500 text-white shadow-lg hover:shadow-xl transition-all duration-200"
                 >
                   {ingredient}
                   <button
@@ -217,7 +235,7 @@ export default function IngredientFilter({
             <button
               onClick={addCustomIngredient}
               disabled={!searchTerm.trim()}
-              className="group px-6 py-4 bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-2xl hover:from-orange-600 hover:to-red-600 disabled:opacity-50 disabled:cursor-not-allowed flex items-center shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
+              className="group px-6 py-4 bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-2xl hover:from-orange-600 hover:to-red-600 disabled:opacity-50 disabled:cursor-not-allowed flex items-center shadow-lg hover:shadow-xl transition-all duration-200"
             >
               <Plus className="w-5 h-5 group-hover:rotate-90 transition-transform duration-300" />
             </button>
@@ -226,7 +244,7 @@ export default function IngredientFilter({
           {/* Common Ingredients */}
           {searchTerm && filteredIngredients.length > 0 && (
             <div className="max-h-40 overflow-y-auto bg-white/80 backdrop-blur-sm border-2 border-gray-200 rounded-2xl shadow-lg">
-              {filteredIngredients.slice(0, 10).map((ingredient) => (
+              {filteredIngredients.map((ingredient) => (
                 <button
                   key={ingredient}
                   onClick={() => addIngredient(ingredient)}
@@ -241,7 +259,8 @@ export default function IngredientFilter({
 
         {/* Expanded Filters */}
         {isExpanded && (
-          <div className="space-y-8">
+          <div className="animate-in slide-in-from-top-2 duration-500">
+          <div className="space-y-8 pb-8">
             {/* Time Filters */}
             <div className="bg-white/60 backdrop-blur-sm rounded-2xl p-6 border border-white/30">
               <div className="flex items-center mb-4">
@@ -257,8 +276,9 @@ export default function IngredientFilter({
                     type="number"
                     min="0"
                     max="180"
-                    value={maxPrepTime}
-                    onChange={(e) => setMaxPrepTime(parseInt(e.target.value) || 0)}
+                    value={maxPrepTime || ""}
+                    placeholder="No limit"
+                    onChange={(e) => setMaxPrepTime(e.target.value ? parseInt(e.target.value) : null)}
                     className="w-full px-4 py-3 border-2 border-gray-200 rounded-2xl focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 bg-white/80 backdrop-blur-sm"
                   />
                 </div>
@@ -270,8 +290,9 @@ export default function IngredientFilter({
                     type="number"
                     min="0"
                     max="180"
-                    value={maxCookTime}
-                    onChange={(e) => setMaxCookTime(parseInt(e.target.value) || 0)}
+                    value={maxCookTime || ""}
+                    placeholder="No limit"
+                    onChange={(e) => setMaxCookTime(e.target.value ? parseInt(e.target.value) : null)}
                     className="w-full px-4 py-3 border-2 border-gray-200 rounded-2xl focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 bg-white/80 backdrop-blur-sm"
                   />
                 </div>
@@ -324,18 +345,38 @@ export default function IngredientFilter({
               </div>
             </div>
           </div>
+          </div>
         )}
 
-        {/* Clear Filters */}
+        {/* Action Buttons */}
         <div className="mt-8 pt-6 border-t border-gray-200/50">
-          <button
-            onClick={clearAllFilters}
-            className="group w-full px-6 py-4 text-sm font-bold text-gray-700 hover:text-white border-2 border-gray-300 rounded-2xl hover:bg-gradient-to-r hover:from-red-500 hover:to-pink-500 hover:border-transparent transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
-          >
-            <span className="group-hover:scale-110 transition-transform duration-300">
-              🗑️ Clear All Filters
-            </span>
-          </button>
+          <div className="flex gap-4">
+            {/* Apply Filters Button */}
+            <button
+              onClick={applyFilters}
+              disabled={!hasPendingChanges}
+              className={`group flex-1 px-6 py-4 text-sm font-bold rounded-2xl transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl ${
+                hasPendingChanges
+                  ? "bg-gradient-to-r from-green-500 to-emerald-500 text-white hover:from-green-600 hover:to-emerald-600"
+                  : "bg-gray-300 text-gray-500 cursor-not-allowed"
+              }`}
+            >
+              <span className="group-hover:scale-110 transition-transform duration-300 flex items-center justify-center">
+                <Sparkles className="w-4 h-4 mr-2" />
+                {hasPendingChanges ? "✨ Apply Filters" : "✅ Filters Applied"}
+              </span>
+            </button>
+
+            {/* Clear Filters Button */}
+            <button
+              onClick={clearAllFilters}
+              className="group px-6 py-4 text-sm font-bold text-gray-700 hover:text-white border-2 border-gray-300 rounded-2xl hover:bg-gradient-to-r hover:from-red-500 hover:to-pink-500 hover:border-transparent transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
+            >
+              <span className="group-hover:scale-110 transition-transform duration-300">
+                🗑️ Clear
+              </span>
+            </button>
+          </div>
         </div>
       </div>
     </div>
