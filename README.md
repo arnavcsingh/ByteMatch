@@ -51,7 +51,7 @@ ByteMatch was built with a modern full-stack TypeScript architecture. The fronte
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/bytematch.git
+git clone https://github.com/arnavcsingh/bytematch.git
 cd bytematch
 
 # Install dependencies
